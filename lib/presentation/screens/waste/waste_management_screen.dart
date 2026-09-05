@@ -1,0 +1,305 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
+import '../../../core/constants/app_colors.dart';
+import '../../../core/constants/app_typography.dart';
+import '../../../core/localization/app_locale_provider.dart';
+import '../../../data/models/waste_record.dart';
+import '../../controllers/waste_controller.dart';
+import 'record_waste_dialog.dart';
+
+class WasteManagementScreen extends ConsumerWidget {
+  const WasteManagementScreen({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final locale = ref.watch(appLocaleProvider);
+    final lang = locale.languageCode;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    final wasteAsync = ref.watch(wasteNotifierProvider);
+
+    return Scaffold(
+      body: wasteAsync.when(
+        loading: () => const Center(child: CircularProgressIndicator(color: AppColors.spoilageRed)),
+        error: (err, _) => Center(child: Text('Error: $err')),
+        data: (wasteState) {
+          final records = wasteState.records;
+
+          return SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Top Warning & Summary Banner
+                Container(
+                  padding: const EdgeInsets.all(18),
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      colors: [Color(0xFFEF4444), Color(0xFFB91C1C)],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    borderRadius: BorderRadius.circular(22),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColors.spoilageRed.withValues(alpha: 0.3),
+                        blurRadius: 16,
+                        offset: const Offset(0, 6),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            AppStrings.get('spoilage_loss', lang),
+                            style: const TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w700,
+                              color: Colors.white,
+                            ),
+                          ),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withValues(alpha: 0.2),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: Row(
+                              children: [
+                                const Icon(Icons.analytics_outlined, color: Colors.white, size: 14),
+                                const SizedBox(width: 4),
+                                Text(
+                                  '${records.length} ${lang == 'ar' ? 'سجلات' : 'records'}',
+                                  style: const TextStyle(
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.w700,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        '${wasteState.totalFinancialLoss.toStringAsFixed(2)} ${AppStrings.get('currency', lang)}',
+                        style: const TextStyle(
+                          fontSize: 28,
+                          fontWeight: FontWeight.w900,
+                          color: Colors.white,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        '${lang == 'ar' ? 'إجمالي الكميات الهالكة:' : 'Total quantity lost:'} ${wasteState.totalQuantityWasted.toStringAsFixed(1)} ${lang == 'ar' ? 'كغ/وحدة' : 'units'}',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.white.withValues(alpha: 0.85),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 16),
+
+                // Spoilage Causes Breakdown
+                Text(
+                  lang == 'ar' ? 'توزيع أسباب التلف' : 'Spoilage Causes Breakdown',
+                  style: AppTypography.headlineSmall(isDark: isDark).copyWith(fontSize: 15),
+                ),
+                const SizedBox(height: 10),
+
+                ...WasteReason.values.map((reason) {
+                  final loss = wasteState.lossByReason[reason] ?? 0.0;
+                  final pct = wasteState.totalFinancialLoss > 0
+                      ? (loss / wasteState.totalFinancialLoss)
+                      : 0.0;
+
+                  return Container(
+                    margin: const EdgeInsets.only(bottom: 8),
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: isDark ? AppColors.surfaceDark : Colors.white,
+                      borderRadius: BorderRadius.circular(14),
+                      border: Border.all(
+                        color: isDark ? AppColors.borderDark : AppColors.borderLight,
+                      ),
+                    ),
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              reason.getLocalized(lang),
+                              style: TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w600,
+                                color: isDark ? Colors.white : AppColors.textPrimaryLight,
+                              ),
+                            ),
+                            Text(
+                              '${loss.toStringAsFixed(1)} ${AppStrings.get('currency', lang)} (${(pct * 100).toStringAsFixed(0)}%)',
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w700,
+                                color: AppColors.spoilageRed,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 8),
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(4),
+                          child: LinearProgressIndicator(
+                            value: pct,
+                            backgroundColor: isDark ? Colors.white10 : AppColors.borderLight,
+                            valueColor: const AlwaysStoppedAnimation<Color>(AppColors.spoilageRed),
+                            minHeight: 6,
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }),
+                const SizedBox(height: 16),
+
+                // History Records Title
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      lang == 'ar' ? 'سجل العمليات الأخير' : 'Recent Spoilage Logs',
+                      style: AppTypography.headlineSmall(isDark: isDark).copyWith(fontSize: 15),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+
+                if (records.isEmpty)
+                  Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(32),
+                      child: Text(
+                        lang == 'ar' ? 'لا يوجد هدر مسجل حتى الآن، رائع!' : 'No spoilage recorded yet, great!',
+                        style: AppTypography.bodyMedium(isDark: isDark),
+                      ),
+                    ),
+                  )
+                else
+                  ListView.separated(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: records.length,
+                    separatorBuilder: (context, index) => const SizedBox(height: 8),
+                    itemBuilder: (context, index) {
+                      final record = records[index];
+                      final formattedDate = DateFormat('yyyy/MM/dd - hh:mm a').format(record.date);
+
+                      return Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: isDark ? AppColors.surfaceDark : Colors.white,
+                          borderRadius: BorderRadius.circular(14),
+                          border: Border.all(
+                            color: isDark ? AppColors.borderDark : AppColors.borderLight,
+                          ),
+                        ),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                color: AppColors.spoilageLight,
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: const Icon(Icons.delete_outline_rounded, color: AppColors.spoilageRed, size: 20),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        lang == 'ar' ? record.produceNameAr : record.produceNameEn,
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w700,
+                                          color: isDark ? Colors.white : AppColors.textPrimaryLight,
+                                        ),
+                                      ),
+                                      Text(
+                                        '-${record.financialLoss.toStringAsFixed(2)} ${AppStrings.get('currency', lang)}',
+                                        style: const TextStyle(
+                                          fontSize: 13,
+                                          fontWeight: FontWeight.w800,
+                                          color: AppColors.spoilageRed,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    '${record.reason.getLocalized(lang)} • ${record.quantityWasted} كغ',
+                                    style: AppTypography.bodySmall(isDark: isDark),
+                                  ),
+                                  if (record.notes.isNotEmpty) ...[
+                                    const SizedBox(height: 2),
+                                    Text(
+                                      '"${record.notes}"',
+                                      style: TextStyle(
+                                        fontSize: 11,
+                                        fontStyle: FontStyle.italic,
+                                        color: isDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight,
+                                      ),
+                                    ),
+                                  ],
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    formattedDate,
+                                    style: TextStyle(
+                                      fontSize: 10,
+                                      color: isDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
+                const SizedBox(height: 80),
+              ],
+            ),
+          );
+        },
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {
+          showDialog(
+            context: context,
+            builder: (_) => const RecordWasteDialog(),
+          );
+        },
+        backgroundColor: AppColors.spoilageRed,
+        icon: const Icon(Icons.delete_sweep_rounded, color: Colors.white),
+        label: Text(
+          AppStrings.get('record_waste', lang),
+          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
+        ),
+      ),
+    );
+  }
+}
