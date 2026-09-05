@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/localization/app_locale_provider.dart';
+import '../../data/models/app_user.dart';
+import '../controllers/auth_controller.dart';
 
 class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
   final String? title;
@@ -174,9 +176,188 @@ class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
                 ),
               ),
             ),
+            const SizedBox(width: 8),
+
+            // User Profile Avatar & Logout Dialog
+            Consumer(
+              builder: (context, ref, _) {
+                final authState = ref.watch(authNotifierProvider);
+                final user = authState.currentUser;
+                if (user == null) return const SizedBox.shrink();
+
+                return InkWell(
+                  onTap: () => _showUserMenu(context, ref, user, lang, isDark),
+                  borderRadius: BorderRadius.circular(12),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 5),
+                    decoration: BoxDecoration(
+                      color: authState.isManager
+                          ? AppColors.primaryLight
+                          : AppColors.secondaryLight,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: authState.isManager
+                            ? AppColors.primary
+                            : AppColors.secondary,
+                        width: 1.2,
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(user.avatarEmoji, style: const TextStyle(fontSize: 16)),
+                        const SizedBox(width: 3),
+                        Text(
+                          user.role.getLocalized(lang),
+                          style: TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.w800,
+                            color: authState.isManager
+                                ? AppColors.primaryDark
+                                : AppColors.secondaryDark,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
           ],
         ),
       ),
+    );
+  }
+
+  void _showUserMenu(BuildContext context, WidgetRef ref, dynamic user, String lang, bool isDark) {
+    showDialog(
+      context: context,
+      builder: (ctx) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          backgroundColor: isDark ? AppColors.surfaceDark : Colors.white,
+          title: Row(
+            children: [
+              Text(user.avatarEmoji, style: const TextStyle(fontSize: 28)),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      user.name,
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w800,
+                        color: isDark ? Colors.white : AppColors.textPrimaryLight,
+                      ),
+                    ),
+                    Text(
+                      user.role.getLocalized(lang),
+                      style: const TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.primary,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: isDark ? AppColors.bgDark : AppColors.bgLight,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '${lang == 'ar' ? 'البريد:' : 'Email:'} ${user.email}',
+                      style: const TextStyle(fontSize: 11),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      '${lang == 'ar' ? 'رمز PIN السريع:' : 'PIN:'} ${user.pinCode}',
+                      style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+              // Fast Role Switcher
+              Text(
+                lang == 'ar' ? 'تبديل الدور التجريبي:' : 'Switch Role (Demo):',
+                style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700),
+              ),
+              const SizedBox(height: 8),
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: () {
+                        ref.read(authNotifierProvider.notifier).loginAs(UserRole.manager);
+                        Navigator.pop(ctx);
+                      },
+                      style: OutlinedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 6),
+                        side: const BorderSide(color: AppColors.primary),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                      ),
+                      child: Text(
+                        lang == 'ar' ? 'مدير' : 'Manager',
+                        style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: AppColors.primary),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: () {
+                        ref.read(authNotifierProvider.notifier).loginAs(UserRole.cashier);
+                        Navigator.pop(ctx);
+                      },
+                      style: OutlinedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 6),
+                        side: const BorderSide(color: AppColors.secondary),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                      ),
+                      child: Text(
+                        lang == 'ar' ? 'كاشير' : 'Cashier',
+                        style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: AppColors.secondaryDark),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              // Logout Button
+              ElevatedButton.icon(
+                onPressed: () {
+                  ref.read(authNotifierProvider.notifier).logout();
+                  Navigator.pop(ctx);
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.spoilageRed,
+                  padding: const EdgeInsets.symmetric(vertical: 10),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                ),
+                icon: const Icon(Icons.logout_rounded, size: 16, color: Colors.white),
+                label: Text(
+                  lang == 'ar' ? 'تسجيل الخروج' : 'Sign Out',
+                  style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w800, color: Colors.white),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

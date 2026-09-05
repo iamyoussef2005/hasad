@@ -5,6 +5,7 @@ import '../../../core/constants/app_typography.dart';
 import '../../../core/localization/app_locale_provider.dart';
 import '../../controllers/inventory_controller.dart';
 import '../../controllers/pos_controller.dart';
+import '../../controllers/auth_controller.dart';
 import 'produce_details_screen.dart';
 import 'add_edit_produce_dialog.dart';
 import 'widgets/category_filter_bar.dart';
@@ -194,23 +195,25 @@ class InventoryScreen extends ConsumerWidget {
           );
         },
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          showDialog(
-            context: context,
-            builder: (_) => const AddEditProduceDialog(),
-          );
-        },
-        backgroundColor: AppColors.primary,
-        icon: const Icon(Icons.add_rounded, color: Colors.white),
-        label: Text(
-          AppStrings.get('add_produce', lang),
-          style: const TextStyle(
-            fontWeight: FontWeight.w700,
-            color: Colors.white,
-          ),
-        ),
-      ),
+      floatingActionButton: ref.watch(authNotifierProvider).isCashier
+          ? null
+          : FloatingActionButton.extended(
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (_) => const AddEditProduceDialog(),
+                );
+              },
+              backgroundColor: AppColors.primary,
+              icon: const Icon(Icons.add_rounded, color: Colors.white),
+              label: Text(
+                AppStrings.get('add_produce', lang),
+                style: const TextStyle(
+                  fontWeight: FontWeight.w700,
+                  color: Colors.white,
+                ),
+              ),
+            ),
     );
   }
 

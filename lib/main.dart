@@ -3,6 +3,8 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'core/theme/app_theme.dart';
 import 'core/localization/app_locale_provider.dart';
+import 'presentation/controllers/auth_controller.dart';
+import 'presentation/screens/auth/login_screen.dart';
 import 'presentation/screens/main_shell_screen.dart';
 
 void main() {
@@ -21,6 +23,7 @@ class HasadApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final currentLocale = ref.watch(appLocaleProvider);
     final themeMode = ref.watch(appThemeModeProvider);
+    final authState = ref.watch(authNotifierProvider);
 
     return MaterialApp(
       title: 'Hasad FreshStock',
@@ -38,7 +41,9 @@ class HasadApp extends ConsumerWidget {
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
       themeMode: themeMode,
-      home: const MainShellScreen(),
+      home: authState.isAuthenticated
+          ? const MainShellScreen()
+          : const LoginScreen(),
     );
   }
 }
