@@ -189,7 +189,7 @@ class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
                   onTap: () => _showUserMenu(context, ref, user, lang, isDark),
                   borderRadius: BorderRadius.circular(12),
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 5),
+                    padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
                     decoration: BoxDecoration(
                       color: authState.isManager
                           ? AppColors.primaryLight
@@ -205,12 +205,20 @@ class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Text(user.avatarEmoji, style: const TextStyle(fontSize: 16)),
-                        const SizedBox(width: 3),
+                        Icon(
+                          authState.isManager
+                              ? Icons.admin_panel_settings_rounded
+                              : Icons.point_of_sale_rounded,
+                          size: 14,
+                          color: authState.isManager
+                              ? AppColors.primaryDark
+                              : AppColors.secondaryDark,
+                        ),
+                        const SizedBox(width: 5),
                         Text(
                           user.role.getLocalized(lang),
                           style: TextStyle(
-                            fontSize: 10,
+                            fontSize: 11,
                             fontWeight: FontWeight.w800,
                             color: authState.isManager
                                 ? AppColors.primaryDark
@@ -230,6 +238,7 @@ class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
   }
 
   void _showUserMenu(BuildContext context, WidgetRef ref, dynamic user, String lang, bool isDark) {
+    final isManager = user.role == UserRole.manager;
     showDialog(
       context: context,
       builder: (ctx) {
@@ -238,8 +247,24 @@ class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
           backgroundColor: isDark ? AppColors.surfaceDark : Colors.white,
           title: Row(
             children: [
-              Text(user.avatarEmoji, style: const TextStyle(fontSize: 28)),
-              const SizedBox(width: 10),
+              Container(
+                width: 42,
+                height: 42,
+                decoration: BoxDecoration(
+                  color: isManager ? AppColors.primaryLight : AppColors.secondaryLight,
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: isManager ? AppColors.primary : AppColors.secondary,
+                    width: 1.5,
+                  ),
+                ),
+                child: Icon(
+                  isManager ? Icons.admin_panel_settings_rounded : Icons.point_of_sale_rounded,
+                  color: isManager ? AppColors.primaryDark : AppColors.secondaryDark,
+                  size: 22,
+                ),
+              ),
+              const SizedBox(width: 12),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

@@ -358,7 +358,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                   side: const BorderSide(color: AppColors.primary),
                                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                                 ),
-                                icon: const Text('👨‍💼', style: TextStyle(fontSize: 14)),
+                                icon: const Icon(Icons.admin_panel_settings_rounded, size: 16, color: AppColors.primary),
                                 label: Text(
                                   lang == 'ar' ? 'المدير (شامل)' : 'Manager',
                                   style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: AppColors.primary),
@@ -374,7 +374,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                   side: const BorderSide(color: AppColors.secondary),
                                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                                 ),
-                                icon: const Text('🧑‍💻', style: TextStyle(fontSize: 14)),
+                                icon: const Icon(Icons.point_of_sale_rounded, size: 16, color: AppColors.secondaryDark),
                                 label: Text(
                                   lang == 'ar' ? 'الكاشير (POS)' : 'Cashier',
                                   style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: AppColors.secondaryDark),
