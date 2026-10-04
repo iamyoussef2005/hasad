@@ -7,6 +7,7 @@ import '../../../core/localization/app_locale_provider.dart';
 import '../../../data/models/batch_item.dart';
 import '../../controllers/inventory_controller.dart';
 import '../waste/record_waste_dialog.dart';
+import '../ai_scanner/ai_freshness_scanner_screen.dart';
 import 'add_edit_produce_dialog.dart';
 import 'widgets/freshness_badge.dart';
 
@@ -39,6 +40,18 @@ class ProduceDetailsScreen extends ConsumerWidget {
               style: AppTypography.headlineSmall(isDark: isDark),
             ),
             actions: [
+              IconButton(
+                icon: const Icon(Icons.document_scanner_rounded, color: AppColors.primary),
+                tooltip: AppStrings.get('ai_scan_camera', lang),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => AiFreshnessScannerScreen(targetItem: item),
+                    ),
+                  );
+                },
+              ),
               IconButton(
                 icon: const Icon(Icons.edit_outlined),
                 onPressed: () {
@@ -195,7 +208,9 @@ class ProduceDetailsScreen extends ConsumerWidget {
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: Text(
-                              'سوق الجملة: ${item.wholesaleMarketPrice} ر.س',
+                              lang == 'ar'
+                                  ? 'سوق الجملة: ${item.wholesaleMarketPrice} ر.س'
+                                  : 'Wholesale: ${item.wholesaleMarketPrice} SAR',
                               style: const TextStyle(
                                 fontSize: 10,
                                 fontWeight: FontWeight.w700,

@@ -13,6 +13,7 @@ import 'widgets/kpi_card.dart';
 import 'widgets/freshness_gauge_widget.dart';
 import 'widgets/weekly_waste_chart.dart';
 import 'widgets/low_stock_banner.dart';
+import 'widgets/ai_markdown_insights_card.dart';
 
 class DashboardScreen extends ConsumerWidget {
   final Function(int)? onNavigateToTab;
@@ -114,6 +115,10 @@ class DashboardScreen extends ConsumerWidget {
                     );
                   },
                 ),
+
+                // AI Dynamic Rescue Pricing & Spoilage Prevention Card
+                const AiMarkdownInsightsCard(),
+                const SizedBox(height: 4),
 
                 // KPI Grid (2x2)
                 GridView.count(

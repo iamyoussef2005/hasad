@@ -79,7 +79,7 @@ class ProduceGridCard extends StatelessWidget {
             ),
           ),
           const Spacer(),
-          // Stock Qty Bar
+          // Stock Qty Bar & Health Indicator
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             decoration: BoxDecoration(
@@ -96,13 +96,24 @@ class ProduceGridCard extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  lang == 'ar' ? 'المخزون:' : 'Stock:',
-                  style: TextStyle(
-                    fontSize: 10,
-                    fontWeight: FontWeight.w600,
-                    color: item.isLowStock ? AppColors.spoilageRed : (isDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight),
-                  ),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      item.isLowStock ? Icons.warning_amber_rounded : Icons.check_circle_outline_rounded,
+                      size: 11,
+                      color: item.isLowStock ? AppColors.spoilageRed : AppColors.primary,
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      lang == 'ar' ? 'المخزون:' : 'Stock:',
+                      style: TextStyle(
+                        fontSize: 10,
+                        fontWeight: FontWeight.w600,
+                        color: item.isLowStock ? AppColors.spoilageRed : (isDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight),
+                      ),
+                    ),
+                  ],
                 ),
                 Text(
                   '${item.currentStock.toStringAsFixed(item.currentStock.truncateToDouble() == item.currentStock ? 0 : 1)} ${item.unit.getLocalized(lang)}',
@@ -116,7 +127,7 @@ class ProduceGridCard extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 8),
-          // Price and Currency
+          // Price and Currency with rescue discount support
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.end,
@@ -124,13 +135,35 @@ class ProduceGridCard extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    lang == 'ar' ? 'سعر البيع' : 'Sell Price',
-                    style: TextStyle(
-                      fontSize: 9,
-                      fontWeight: FontWeight.w500,
-                      color: isDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight,
-                    ),
+                  Row(
+                    children: [
+                      Text(
+                        lang == 'ar' ? 'سعر البيع' : 'Sell Price',
+                        style: TextStyle(
+                          fontSize: 9,
+                          fontWeight: FontWeight.w500,
+                          color: isDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight,
+                        ),
+                      ),
+                      if (item.hasRescueDiscount) ...[
+                        const SizedBox(width: 4),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
+                          decoration: BoxDecoration(
+                            color: AppColors.spoilageRed,
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                          child: Text(
+                            '-${item.discountPercentage.toInt()}%',
+                            style: const TextStyle(
+                              fontSize: 8.5,
+                              fontWeight: FontWeight.w800,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ],
                   ),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.baseline,
@@ -139,9 +172,9 @@ class ProduceGridCard extends StatelessWidget {
                       Text(
                         item.sellingPrice.toStringAsFixed(2),
                         style: AppTypography.numberMedium(isDark: isDark).copyWith(
-                          color: AppColors.primary,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w800,
+                          color: item.hasRescueDiscount ? AppColors.spoilageRed : AppColors.primary,
+                          fontSize: 16.5,
+                          fontWeight: FontWeight.w900,
                         ),
                       ),
                       const SizedBox(width: 3),
@@ -150,9 +183,21 @@ class ProduceGridCard extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 10,
                           fontWeight: FontWeight.w700,
-                          color: AppColors.primary,
+                          color: item.hasRescueDiscount ? AppColors.spoilageRed : AppColors.primary,
                         ),
                       ),
+                      if (item.hasRescueDiscount && item.originalPrice != null) ...[
+                        const SizedBox(width: 5),
+                        Text(
+                          item.originalPrice!.toStringAsFixed(2),
+                          style: TextStyle(
+                            fontSize: 10,
+                            decoration: TextDecoration.lineThrough,
+                            color: isDark ? AppColors.textSecondaryDark : Colors.grey,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
                     ],
                   ),
                 ],

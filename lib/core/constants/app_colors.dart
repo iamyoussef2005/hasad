@@ -11,6 +11,7 @@ class AppColors {
   static const Color secondary = Color(0xFFF59E0B); // Amber 500
   static const Color secondaryDark = Color(0xFFD97706); // Amber 600
   static const Color secondaryLight = Color(0xFFFEF3C7); // Amber 100
+  static const Color citrusYellow = Color(0xFFFBBF24); // Amber 400
 
   // Alert & Spoilage Colors
   static const Color spoilageRed = Color(0xFFEF4444); // Red 500

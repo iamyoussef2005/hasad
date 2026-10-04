@@ -23,6 +23,12 @@ class AppTypography {
         color: isDark ? AppColors.textPrimaryDark : AppColors.textPrimaryLight,
       );
 
+  static TextStyle titleMedium({required bool isDark}) => GoogleFonts.ibmPlexSansArabic(
+        fontSize: 14,
+        fontWeight: FontWeight.w600,
+        color: isDark ? AppColors.textPrimaryDark : AppColors.textPrimaryLight,
+      );
+
   static TextStyle bodyLarge({required bool isDark}) => GoogleFonts.ibmPlexSansArabic(
         fontSize: 15,
         fontWeight: FontWeight.w500,

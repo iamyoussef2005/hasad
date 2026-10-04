@@ -119,19 +119,27 @@ class WeeklyWasteChart extends StatelessWidget {
                 barGroups: List.generate(7, (i) {
                   return BarChartGroupData(
                     x: i,
-                    barsSpace: 4,
+                    barsSpace: 5,
                     barRods: [
                       BarChartRodData(
                         toY: salesData[i],
-                        color: AppColors.primary,
-                        width: 10,
-                        borderRadius: const BorderRadius.vertical(top: Radius.circular(4)),
+                        gradient: const LinearGradient(
+                          colors: [Color(0xFF34D399), Color(0xFF059669)],
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                        ),
+                        width: 11,
+                        borderRadius: const BorderRadius.vertical(top: Radius.circular(6)),
                       ),
                       BarChartRodData(
                         toY: wasteData[i],
-                        color: AppColors.spoilageRed,
-                        width: 8,
-                        borderRadius: const BorderRadius.vertical(top: Radius.circular(4)),
+                        gradient: const LinearGradient(
+                          colors: [Color(0xFFF87171), Color(0xFFDC2626)],
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                        ),
+                        width: 9,
+                        borderRadius: const BorderRadius.vertical(top: Radius.circular(6)),
                       ),
                     ],
                   );

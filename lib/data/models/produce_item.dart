@@ -20,6 +20,10 @@ class ProduceItem {
   final List<BatchItem> batches;
   final List<PricePoint> priceHistory;
   final bool isFeatured;
+  final double? originalPrice;
+  final bool isMarkdownActive;
+  final double discountPercentage;
+  final DateTime? lastAiInspectionDate;
 
   const ProduceItem({
     required this.id,
@@ -39,11 +43,16 @@ class ProduceItem {
     this.batches = const [],
     this.priceHistory = const [],
     this.isFeatured = false,
+    this.originalPrice,
+    this.isMarkdownActive = false,
+    this.discountPercentage = 0.0,
+    this.lastAiInspectionDate,
   });
 
   bool get isLowStock => currentStock <= minStockThreshold;
   double get totalValue => currentStock * costPrice;
   double get profitMargin => sellingPrice > 0 ? ((sellingPrice - costPrice) / sellingPrice) * 100 : 0.0;
+  bool get hasRescueDiscount => isMarkdownActive && discountPercentage > 0;
 
   String getName(String lang) => lang == 'ar' ? nameAr : nameEn;
 
@@ -65,6 +74,10 @@ class ProduceItem {
     List<BatchItem>? batches,
     List<PricePoint>? priceHistory,
     bool? isFeatured,
+    double? originalPrice,
+    bool? isMarkdownActive,
+    double? discountPercentage,
+    DateTime? lastAiInspectionDate,
   }) {
     return ProduceItem(
       id: id ?? this.id,
@@ -84,6 +97,10 @@ class ProduceItem {
       batches: batches ?? this.batches,
       priceHistory: priceHistory ?? this.priceHistory,
       isFeatured: isFeatured ?? this.isFeatured,
+      originalPrice: originalPrice ?? this.originalPrice,
+      isMarkdownActive: isMarkdownActive ?? this.isMarkdownActive,
+      discountPercentage: discountPercentage ?? this.discountPercentage,
+      lastAiInspectionDate: lastAiInspectionDate ?? this.lastAiInspectionDate,
     );
   }
 }

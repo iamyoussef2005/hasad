@@ -48,12 +48,17 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   Future<void> _submitPin() async {
     final success = await ref.read(authNotifierProvider.notifier).loginWithPin(_enteredPin);
     if (!success && mounted) {
+      final lang = ref.read(appLocaleProvider).languageCode;
       setState(() {
         _enteredPin = '';
       });
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('رمز PIN غير صحيح! جرب 1111 للمدير أو 2222 للكاشير'),
+        SnackBar(
+          content: Text(
+            lang == 'ar'
+                ? 'رمز PIN غير صحيح، يُرجى إعادة المحاولة'
+                : 'Incorrect PIN, please try again',
+          ),
           backgroundColor: AppColors.spoilageRed,
         ),
       );
@@ -320,72 +325,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       ),
                     ),
                   ],
-                  const SizedBox(height: 24),
-
-                  // DEMO 1-CLICK ACCESS BUTTONS (PORTFOLIO SHOWCASE)
-                  Container(
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: isDark ? AppColors.surfaceDark : Colors.white,
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(color: isDark ? AppColors.borderDark : AppColors.borderLight),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            const Icon(Icons.play_circle_outline_rounded, color: AppColors.primary, size: 16),
-                            const SizedBox(width: 6),
-                            Expanded(
-                              child: Text(
-                                lang == 'ar' ? 'تجربة سريعة للبورتفوليو (1-Click Demo)' : '1-Click Portfolio Demo',
-                                style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: AppColors.primary),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 10),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: OutlinedButton.icon(
-                                onPressed: () => ref.read(authNotifierProvider.notifier).loginAs(UserRole.manager),
-                                style: OutlinedButton.styleFrom(
-                                  padding: const EdgeInsets.symmetric(vertical: 8),
-                                  side: const BorderSide(color: AppColors.primary),
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                                ),
-                                icon: const Icon(Icons.admin_panel_settings_rounded, size: 16, color: AppColors.primary),
-                                label: Text(
-                                  lang == 'ar' ? 'المدير (شامل)' : 'Manager',
-                                  style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: AppColors.primary),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: 8),
-                            Expanded(
-                              child: OutlinedButton.icon(
-                                onPressed: () => ref.read(authNotifierProvider.notifier).loginAs(UserRole.cashier),
-                                style: OutlinedButton.styleFrom(
-                                  padding: const EdgeInsets.symmetric(vertical: 8),
-                                  side: const BorderSide(color: AppColors.secondary),
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                                ),
-                                icon: const Icon(Icons.point_of_sale_rounded, size: 16, color: AppColors.secondaryDark),
-                                label: Text(
-                                  lang == 'ar' ? 'الكاشير (POS)' : 'Cashier',
-                                  style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: AppColors.secondaryDark),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
                 ],
               ),
             ),
@@ -402,20 +341,30 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           ['1', '2', '3'],
           ['4', '5', '6'],
           ['7', '8', '9'],
-          ['', '0', 'back'],
+          ['bio', '0', 'back'],
         ])
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 4),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: row.map((key) {
-                if (key.isEmpty) {
-                  return const SizedBox(width: 72, height: 48);
+                if (key == 'bio') {
+                  return Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 6),
+                    width: 64,
+                    height: 46,
+                    child: IconButton(
+                      icon: const Icon(Icons.fingerprint_rounded, size: 26, color: AppColors.primary),
+                      onPressed: () {
+                        ref.read(authNotifierProvider.notifier).loginAs(UserRole.manager);
+                      },
+                    ),
+                  );
                 }
                 if (key == 'back') {
                   return SizedBox(
-                    width: 72,
-                    height: 48,
+                    width: 64,
+                    height: 46,
                     child: IconButton(
                       icon: const Icon(Icons.backspace_outlined, size: 20),
                       onPressed: _onBackspace,

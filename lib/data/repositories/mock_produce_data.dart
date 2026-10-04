@@ -84,7 +84,7 @@ class MockProduceData {
         sellingPrice: 3.0,
         wholesaleMarketPrice: 2.0,
         shelfLifeDays: 4,
-        freshnessScore: 0.65, // Medium freshness, needs quick sale
+        freshnessScore: 0.42, // Critical freshness, triggers AI markdown rescue proposal
         emoji: '🥬',
         primaryColorHex: '#22C55E',
         batches: [

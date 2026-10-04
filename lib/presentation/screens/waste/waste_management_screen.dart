@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:fl_chart/fl_chart.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_typography.dart';
 import '../../../core/localization/app_locale_provider.dart';
@@ -114,6 +115,8 @@ class WasteManagementScreen extends ConsumerWidget {
                   style: AppTypography.headlineSmall(isDark: isDark).copyWith(fontSize: 15),
                 ),
                 const SizedBox(height: 10),
+
+                _buildWasteDonutChart(wasteState, lang, isDark),
 
                 ...WasteReason.values.map((reason) {
                   final loss = wasteState.lossByReason[reason] ?? 0.0;
@@ -299,6 +302,119 @@ class WasteManagementScreen extends ConsumerWidget {
           AppStrings.get('record_waste', lang),
           style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
         ),
+      ),
+    );
+  }
+
+  Widget _buildWasteDonutChart(WasteState wasteState, String lang, bool isDark) {
+    if (wasteState.totalFinancialLoss <= 0) return const SizedBox.shrink();
+
+    final reasonColors = {
+      WasteReason.wiltingAndRot: const Color(0xFFEF4444),
+      WasteReason.transitDamage: const Color(0xFFF97316),
+      WasteReason.poorCooling: const Color(0xFF3B82F6),
+      WasteReason.pestContamination: const Color(0xFFA855F7),
+      WasteReason.other: const Color(0xFF64748B),
+    };
+
+    final sections = <PieChartSectionData>[];
+    for (final reason in WasteReason.values) {
+      final loss = wasteState.lossByReason[reason] ?? 0.0;
+      if (loss <= 0) continue;
+      final pct = (loss / wasteState.totalFinancialLoss) * 100;
+      sections.add(
+        PieChartSectionData(
+          color: reasonColors[reason] ?? AppColors.spoilageRed,
+          value: loss,
+          title: '${pct.toInt()}%',
+          radius: 32,
+          titleStyle: const TextStyle(
+            fontSize: 10,
+            fontWeight: FontWeight.w900,
+            color: Colors.white,
+          ),
+        ),
+      );
+    }
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: isDark ? AppColors.surfaceDark : Colors.white,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(
+          color: isDark ? AppColors.borderDark : AppColors.borderLight,
+        ),
+      ),
+      child: Row(
+        children: [
+          SizedBox(
+            width: 110,
+            height: 110,
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                PieChart(
+                  PieChartData(
+                    sections: sections,
+                    centerSpaceRadius: 26,
+                    sectionsSpace: 2.5,
+                  ),
+                ),
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(Icons.pie_chart_rounded, size: 14, color: AppColors.spoilageRed),
+                    Text(
+                      '${wasteState.totalFinancialLoss.toInt()}',
+                      style: const TextStyle(fontSize: 11.5, fontWeight: FontWeight.w900),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: WasteReason.values.where((r) => (wasteState.lossByReason[r] ?? 0) > 0).map((r) {
+                final loss = wasteState.lossByReason[r] ?? 0.0;
+                final color = reasonColors[r] ?? Colors.grey;
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 2.5),
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 8,
+                        height: 8,
+                        decoration: BoxDecoration(shape: BoxShape.circle, color: color),
+                      ),
+                      const SizedBox(width: 6),
+                      Expanded(
+                        child: Text(
+                          r.getLocalized(lang),
+                          style: TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w600,
+                            color: isDark ? Colors.white70 : AppColors.textPrimaryLight,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      Text(
+                        '${loss.toStringAsFixed(1)} ${AppStrings.get('currency', lang)}',
+                        style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800, color: color),
+                      ),
+                    ],
+                  ),
+                );
+              }).toList(),
+            ),
+          ),
+        ],
       ),
     );
   }

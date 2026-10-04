@@ -107,28 +107,61 @@ class ProduceListItem extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
+              if (item.hasRescueDiscount) ...[
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
+                      decoration: BoxDecoration(
+                        color: AppColors.spoilageRed,
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                      child: Text(
+                        '-${item.discountPercentage.toInt()}%',
+                        style: const TextStyle(
+                          fontSize: 8,
+                          fontWeight: FontWeight.w800,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 4),
+                    if (item.originalPrice != null)
+                      Text(
+                        item.originalPrice!.toStringAsFixed(1),
+                        style: TextStyle(
+                          fontSize: 10,
+                          decoration: TextDecoration.lineThrough,
+                          color: isDark ? AppColors.textSecondaryDark : Colors.grey,
+                        ),
+                      ),
+                  ],
+                ),
+                const SizedBox(height: 2),
+              ],
               Text(
                 '${item.sellingPrice.toStringAsFixed(2)} ${lang == 'ar' ? 'ر.س' : 'SAR'}',
                 style: AppTypography.numberSmall(isDark: isDark).copyWith(
-                  color: AppColors.primary,
-                  fontWeight: FontWeight.w800,
-                  fontSize: 14,
+                  color: item.hasRescueDiscount ? AppColors.spoilageRed : AppColors.primary,
+                  fontWeight: FontWeight.w900,
+                  fontSize: 14.5,
                 ),
               ),
               const SizedBox(height: 2),
               Text(
                 '${lang == 'ar' ? 'ربح' : 'Margin'} ${item.profitMargin.toStringAsFixed(0)}%',
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 10,
-                  fontWeight: FontWeight.w600,
+                  fontWeight: FontWeight.w700,
                   color: AppColors.successGreen,
                 ),
               ),
             ],
           ),
-          const SizedBox(width: 4),
+          const SizedBox(width: 6),
           Icon(
-            Icons.chevron_right_rounded,
+            lang == 'ar' ? Icons.chevron_left_rounded : Icons.chevron_right_rounded,
             size: 20,
             color: isDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight,
           ),

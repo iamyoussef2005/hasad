@@ -40,35 +40,48 @@ class KpiCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Container(
-                width: 38,
-                height: 38,
+                width: 42,
+                height: 42,
                 decoration: BoxDecoration(
                   color: iconBgColor,
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(14),
+                  boxShadow: [
+                    BoxShadow(
+                      color: iconColor.withValues(alpha: 0.2),
+                      blurRadius: 8,
+                      offset: const Offset(0, 3),
+                    ),
+                  ],
                 ),
-                child: Icon(icon, color: iconColor, size: 20),
+                child: Icon(icon, color: iconColor, size: 22),
               ),
               if (trendText != null)
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                   decoration: BoxDecoration(
                     color: isTrendPositive ? AppColors.successLight : AppColors.spoilageLight,
-                    borderRadius: BorderRadius.circular(6),
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(
+                      color: isTrendPositive
+                          ? AppColors.successGreen.withValues(alpha: 0.3)
+                          : AppColors.spoilageRed.withValues(alpha: 0.3),
+                      width: 0.8,
+                    ),
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Icon(
                         isTrendPositive ? Icons.trending_up_rounded : Icons.trending_down_rounded,
-                        size: 12,
+                        size: 13,
                         color: isTrendPositive ? AppColors.successGreen : AppColors.spoilageRed,
                       ),
-                      const SizedBox(width: 2),
+                      const SizedBox(width: 3),
                       Text(
                         trendText!,
                         style: TextStyle(
-                          fontSize: 10,
-                          fontWeight: FontWeight.w700,
+                          fontSize: 10.5,
+                          fontWeight: FontWeight.w800,
                           color: isTrendPositive ? AppColors.successGreen : AppColors.spoilageRed,
                         ),
                       ),
@@ -82,18 +95,21 @@ class KpiCard extends StatelessWidget {
             title,
             style: AppTypography.bodySmall(isDark: isDark).copyWith(
               fontWeight: FontWeight.w600,
+              fontSize: 11.5,
             ),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: 3),
           FittedBox(
             fit: BoxFit.scaleDown,
-            alignment: Alignment.centerLeft,
+            alignment: AlignmentDirectional.centerStart,
             child: Text(
               value,
               style: AppTypography.numberMedium(isDark: isDark).copyWith(
-                fontWeight: FontWeight.w800,
+                fontWeight: FontWeight.w900,
+                fontSize: 19,
+                letterSpacing: -0.2,
               ),
             ),
           ),
@@ -103,8 +119,11 @@ class KpiCard extends StatelessWidget {
               subtitle!,
               style: AppTypography.bodySmall(isDark: isDark).copyWith(
                 fontSize: 10,
+                fontWeight: FontWeight.w500,
                 color: isDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight,
               ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ),
           ],
         ],

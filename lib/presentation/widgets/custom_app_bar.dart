@@ -107,17 +107,56 @@ class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
             ),
             const SizedBox(width: 12),
             // Title Only (Larger and Bolder)
+            // Title & Subtitle / Live Cloud Indicator
             Expanded(
-              child: Text(
-                displayTitle,
-                style: TextStyle(
-                  fontSize: 23,
-                  fontWeight: FontWeight.w900,
-                  letterSpacing: -0.3,
-                  color: isDark ? AppColors.textPrimaryDark : AppColors.textPrimaryLight,
-                ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    displayTitle,
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w900,
+                      letterSpacing: -0.3,
+                      color: isDark ? AppColors.textPrimaryDark : AppColors.textPrimaryLight,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 2),
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        width: 6,
+                        height: 6,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: AppColors.successGreen,
+                          boxShadow: [
+                            BoxShadow(
+                              color: AppColors.successGreen.withValues(alpha: 0.6),
+                              blurRadius: 4,
+                              spreadRadius: 1,
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(width: 5),
+                      Text(
+                        subtitle ?? (lang == 'ar' ? 'سحابي متصل' : 'Cloud Sync Active'),
+                        style: TextStyle(
+                          fontSize: 10,
+                          fontWeight: FontWeight.w600,
+                          color: isDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ),
             // Extra actions if any
@@ -309,7 +348,7 @@ class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
                     ),
                     const SizedBox(height: 2),
                     Text(
-                      '${lang == 'ar' ? 'رمز PIN السريع:' : 'PIN:'} ${user.pinCode}',
+                      '${lang == 'ar' ? 'معرف الموظف:' : 'Employee ID:'} #${user.pinCode}',
                       style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700),
                     ),
                   ],
@@ -318,7 +357,7 @@ class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
               const SizedBox(height: 16),
               // Fast Role Switcher
               Text(
-                lang == 'ar' ? 'تبديل الدور التجريبي:' : 'Switch Role (Demo):',
+                lang == 'ar' ? 'تبديل المستخدم الحالي:' : 'Switch Active User:',
                 style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700),
               ),
               const SizedBox(height: 8),

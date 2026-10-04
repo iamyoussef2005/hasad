@@ -243,48 +243,108 @@ class _QuickPosScreenState extends ConsumerState<QuickPosScreen> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
-                              // Scale Box
+                              // Digital Precision Scale Terminal Box
                               Container(
-                                padding: const EdgeInsets.all(9),
+                                padding: const EdgeInsets.all(10),
                                 decoration: BoxDecoration(
-                                  color: isDark ? AppColors.bgDark : AppColors.bgLight,
-                                  borderRadius: BorderRadius.circular(14),
+                                  color: isDark ? const Color(0xFF0B132B) : const Color(0xFF0F172A),
+                                  borderRadius: BorderRadius.circular(16),
                                   border: Border.all(
-                                    color: isDark ? AppColors.borderDark : AppColors.borderLight,
+                                    color: const Color(0xFF10B981).withValues(alpha: 0.35),
+                                    width: 1.2,
                                   ),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: const Color(0xFF10B981).withValues(alpha: 0.12),
+                                      blurRadius: 12,
+                                      offset: const Offset(0, 3),
+                                    ),
+                                  ],
                                 ),
                                 child: Column(
                                   children: [
+                                    // Scale Header: Status indicators (Responsive & Overflow-proof)
                                     Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
                                       children: [
-                                        const Icon(Icons.scale_rounded, size: 14, color: AppColors.primary),
+                                        const Icon(Icons.scale_rounded, size: 13, color: Color(0xFF34D399)),
                                         const SizedBox(width: 4),
-                                        Text(
-                                          AppStrings.get('weight_calculator', lang),
-                                          style: const TextStyle(
-                                            fontSize: 10.5,
-                                            fontWeight: FontWeight.w700,
-                                            color: AppColors.primary,
+                                        Expanded(
+                                          child: Text(
+                                            lang == 'ar' ? 'الميزان الرقمي' : 'Digital Scale',
+                                            style: const TextStyle(
+                                              fontSize: 10,
+                                              fontWeight: FontWeight.w800,
+                                              color: Color(0xFF34D399),
+                                            ),
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ),
+                                        const SizedBox(width: 4),
+                                        Container(
+                                          width: 5,
+                                          height: 5,
+                                          decoration: const BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color: Color(0xFF10B981),
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: Color(0xFF10B981),
+                                                blurRadius: 4,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        const SizedBox(width: 3),
+                                        const Text(
+                                          'STABLE',
+                                          style: TextStyle(
+                                            fontSize: 7.5,
+                                            fontWeight: FontWeight.w800,
+                                            letterSpacing: 0.5,
+                                            color: Color(0xFF10B981),
+                                          ),
+                                        ),
+                                        const SizedBox(width: 4),
+                                        Container(
+                                          padding: const EdgeInsets.symmetric(horizontal: 3, vertical: 1),
+                                          decoration: BoxDecoration(
+                                            color: Colors.white.withValues(alpha: 0.1),
+                                            borderRadius: BorderRadius.circular(3),
+                                          ),
+                                          child: const Text(
+                                            'NET',
+                                            style: TextStyle(
+                                              fontSize: 7,
+                                              fontWeight: FontWeight.w800,
+                                              color: Colors.white70,
+                                            ),
                                           ),
                                         ),
                                       ],
                                     ),
                                     const SizedBox(height: 6),
                                     if (posState.selectedItem != null) ...[
-                                      Text(
-                                        '${posState.selectedItem!.emoji} ${posState.selectedItem!.getName(lang)}',
-                                        style: TextStyle(
-                                          fontSize: 12.5,
-                                          fontWeight: FontWeight.w700,
-                                          color: isDark ? Colors.white : AppColors.textPrimaryLight,
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                                        decoration: BoxDecoration(
+                                          color: Colors.white.withValues(alpha: 0.06),
+                                          borderRadius: BorderRadius.circular(8),
                                         ),
-                                        textAlign: TextAlign.center,
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
+                                        child: Text(
+                                          '${posState.selectedItem!.emoji} ${posState.selectedItem!.getName(lang)}',
+                                          style: const TextStyle(
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w800,
+                                            color: Colors.white,
+                                          ),
+                                          textAlign: TextAlign.center,
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
                                       ),
-                                      const SizedBox(height: 4),
-                                      // Scale weight numbers
+                                      const SizedBox(height: 6),
+                                      // Scale weight numbers OLED readout
                                       Row(
                                         mainAxisAlignment: MainAxisAlignment.center,
                                         crossAxisAlignment: CrossAxisAlignment.baseline,
@@ -293,18 +353,25 @@ class _QuickPosScreenState extends ConsumerState<QuickPosScreen> {
                                           Text(
                                             posState.inputWeight.toStringAsFixed(2),
                                             style: const TextStyle(
-                                              fontSize: 26,
+                                              fontSize: 30,
                                               fontWeight: FontWeight.w900,
-                                              color: AppColors.primary,
+                                              color: Color(0xFF34D399),
+                                              letterSpacing: 1,
+                                              shadows: [
+                                                Shadow(
+                                                  color: Color(0xFF10B981),
+                                                  blurRadius: 10,
+                                                ),
+                                              ],
                                             ),
                                           ),
-                                          const SizedBox(width: 3),
+                                          const SizedBox(width: 4),
                                           Text(
                                             posState.selectedItem!.unit.getLocalized(lang),
-                                            style: TextStyle(
-                                              fontSize: 11,
-                                              fontWeight: FontWeight.w700,
-                                              color: isDark ? Colors.white70 : AppColors.textPrimaryLight,
+                                            style: const TextStyle(
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w800,
+                                              color: Colors.white70,
                                             ),
                                           ),
                                         ],
@@ -312,10 +379,10 @@ class _QuickPosScreenState extends ConsumerState<QuickPosScreen> {
                                       // Total item price
                                       Text(
                                         '= ${(posState.selectedItem!.sellingPrice * posState.inputWeight).toStringAsFixed(2)} ${AppStrings.get('currency', lang)}',
-                                        style: TextStyle(
-                                          fontSize: 12.5,
+                                        style: const TextStyle(
+                                          fontSize: 13,
                                           fontWeight: FontWeight.w800,
-                                          color: isDark ? Colors.white : AppColors.textPrimaryLight,
+                                          color: Color(0xFFFBBF24),
                                         ),
                                       ),
                                       const SizedBox(height: 8),
@@ -336,8 +403,8 @@ class _QuickPosScreenState extends ConsumerState<QuickPosScreen> {
                                       // Add button
                                       SizedBox(
                                         width: double.infinity,
-                                        height: 32,
-                                        child: ElevatedButton(
+                                        height: 34,
+                                        child: ElevatedButton.icon(
                                           onPressed: () {
                                             ref.read(posNotifierProvider.notifier).addToCart();
                                           },
@@ -345,24 +412,33 @@ class _QuickPosScreenState extends ConsumerState<QuickPosScreen> {
                                             backgroundColor: AppColors.primary,
                                             padding: EdgeInsets.zero,
                                             elevation: 0,
-                                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(9)),
+                                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                                           ),
-                                          child: Text(
+                                          icon: const Icon(Icons.add_shopping_cart_rounded, size: 14, color: Colors.white),
+                                          label: Text(
                                             lang == 'ar' ? 'إضافة للسلة' : 'Add to Cart',
-                                            style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: Colors.white),
+                                            style: const TextStyle(fontSize: 11.5, fontWeight: FontWeight.w800, color: Colors.white),
                                           ),
                                         ),
                                       ),
                                     ] else ...[
                                       Padding(
                                         padding: const EdgeInsets.symmetric(vertical: 18),
-                                        child: Text(
-                                          lang == 'ar' ? 'اختر صنفاً من القائمة لبدء حسابه' : 'Tap a produce to weigh',
-                                          style: TextStyle(
-                                            fontSize: 10.5,
-                                            color: isDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight,
-                                          ),
-                                          textAlign: TextAlign.center,
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            const Icon(Icons.touch_app_outlined, size: 14, color: Colors.white60),
+                                            const SizedBox(width: 6),
+                                            Text(
+                                              lang == 'ar' ? 'اضغط صنفاً لبدء وزنه' : 'Select item to weigh',
+                                              style: const TextStyle(
+                                                fontSize: 11,
+                                                fontWeight: FontWeight.w600,
+                                                color: Colors.white70,
+                                              ),
+                                              textAlign: TextAlign.center,
+                                            ),
+                                          ],
                                         ),
                                       ),
                                     ],
@@ -504,19 +580,16 @@ class _QuickPosScreenState extends ConsumerState<QuickPosScreen> {
                             const SizedBox(height: 6),
                             SizedBox(
                               width: double.infinity,
-                              height: 36,
-                              child: ElevatedButton(
+                              height: 38,
+                              child: ElevatedButton.icon(
                                 onPressed: posState.cart.isEmpty
                                     ? null
                                     : () async {
+                                        final savedCart = List<CartItem>.from(posState.cart);
+                                        final savedTotal = posState.cartTotal;
                                         await ref.read(posNotifierProvider.notifier).checkout();
                                         if (context.mounted) {
-                                          ScaffoldMessenger.of(context).showSnackBar(
-                                            SnackBar(
-                                              content: Text(AppStrings.get('sale_completed', lang)),
-                                              backgroundColor: AppColors.primary,
-                                            ),
-                                          );
+                                          _showReceiptDialog(context, savedCart, savedTotal, lang, isDark);
                                         }
                                       },
                                 style: ElevatedButton.styleFrom(
@@ -525,9 +598,10 @@ class _QuickPosScreenState extends ConsumerState<QuickPosScreen> {
                                   elevation: 0,
                                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                                 ),
-                                child: Text(
+                                icon: const Icon(Icons.receipt_long_rounded, size: 16, color: Colors.white),
+                                label: Text(
                                   AppStrings.get('confirm_sale', lang),
-                                  style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w800, color: Colors.white),
+                                  style: const TextStyle(fontSize: 11.5, fontWeight: FontWeight.w800, color: Colors.white),
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                 ),
@@ -583,6 +657,299 @@ class _QuickPosScreenState extends ConsumerState<QuickPosScreen> {
           style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w700, color: AppColors.spoilageRed),
         ),
       ),
+    );
+  }
+
+  void _showReceiptDialog(
+    BuildContext context,
+    List<CartItem> items,
+    double totalAmount,
+    String lang,
+    bool isDark,
+  ) {
+    final vatAmount = totalAmount * 0.15 / 1.15;
+    final subtotal = totalAmount - vatAmount;
+    final now = DateTime.now();
+    final invoiceNumber = 'INV-${now.year}${now.month.toString().padLeft(2, '0')}${now.day.toString().padLeft(2, '0')}-${now.millisecondsSinceEpoch.toString().substring(8)}';
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (ctx) {
+        return AlertDialog(
+          backgroundColor: isDark ? AppColors.surfaceDark : Colors.white,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+          contentPadding: const EdgeInsets.fromLTRB(20, 20, 20, 16),
+          content: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 380),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  // Success Check Icon
+                  Center(
+                    child: Container(
+                      width: 52,
+                      height: 52,
+                      decoration: BoxDecoration(
+                        gradient: AppColors.primaryGradient,
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: AppColors.primary.withValues(alpha: 0.35),
+                            blurRadius: 14,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: const Icon(Icons.check_rounded, color: Colors.white, size: 30),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Center(
+                    child: Text(
+                      lang == 'ar' ? 'تمت عملية البيع بنجاح!' : 'Sale Completed Successfully!',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w800,
+                        color: isDark ? Colors.white : AppColors.textPrimaryLight,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 3),
+                  Center(
+                    child: Text(
+                      lang == 'ar' ? 'فاتورة ضريبية مبسطة (إلكترونية)' : 'Simplified Tax E-Invoice',
+                      style: TextStyle(
+                        fontSize: 11.5,
+                        fontWeight: FontWeight.w600,
+                        color: isDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 14),
+
+                  // Receipt Sheet Container
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: isDark ? AppColors.bgDark : const Color(0xFFF8FAFC),
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(
+                        color: isDark ? AppColors.borderDark : AppColors.borderLight,
+                      ),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              lang == 'ar' ? 'رقم الفاتورة:' : 'Invoice #:',
+                              style: const TextStyle(fontSize: 10.5, color: Colors.grey),
+                            ),
+                            Text(
+                              invoiceNumber,
+                              style: const TextStyle(fontSize: 10.5, fontWeight: FontWeight.w700),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 4),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              lang == 'ar' ? 'التاريخ والوقت:' : 'Date & Time:',
+                              style: const TextStyle(fontSize: 10.5, color: Colors.grey),
+                            ),
+                            Text(
+                              '${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')} - ${now.day}/${now.month}/${now.year}',
+                              style: const TextStyle(fontSize: 10.5, fontWeight: FontWeight.w600),
+                            ),
+                          ],
+                        ),
+                        const Divider(height: 18, thickness: 0.8),
+
+                        // Items list
+                        ...items.map((cartItem) {
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 3.5),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Expanded(
+                                  child: Row(
+                                    children: [
+                                      Text(cartItem.produce.emoji, style: const TextStyle(fontSize: 15)),
+                                      const SizedBox(width: 6),
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              cartItem.produce.getName(lang),
+                                              style: const TextStyle(fontSize: 11.5, fontWeight: FontWeight.w700),
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                            Text(
+                                              '${cartItem.quantity.toStringAsFixed(2)} ${cartItem.produce.unit.getLocalized(lang)} × ${cartItem.produce.sellingPrice.toStringAsFixed(2)}',
+                                              style: TextStyle(
+                                                fontSize: 9.5,
+                                                color: isDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Text(
+                                  '${cartItem.totalPrice.toStringAsFixed(2)} ${AppStrings.get('currency', lang)}',
+                                  style: const TextStyle(fontSize: 11.5, fontWeight: FontWeight.w800),
+                                ),
+                              ],
+                            ),
+                          );
+                        }),
+
+                        const Divider(height: 18, thickness: 0.8),
+
+                        // Financial totals
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              lang == 'ar' ? 'المبلغ بدون الضريبة:' : 'Subtotal Excl. VAT:',
+                              style: const TextStyle(fontSize: 10.5, color: Colors.grey),
+                            ),
+                            Text(
+                              '${subtotal.toStringAsFixed(2)} ${AppStrings.get('currency', lang)}',
+                              style: const TextStyle(fontSize: 10.5, fontWeight: FontWeight.w600),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 3),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              lang == 'ar' ? 'ضريبة القيمة المضافة (15%):' : 'VAT (15%):',
+                              style: const TextStyle(fontSize: 10.5, color: Colors.grey),
+                            ),
+                            Text(
+                              '${vatAmount.toStringAsFixed(2)} ${AppStrings.get('currency', lang)}',
+                              style: const TextStyle(fontSize: 10.5, fontWeight: FontWeight.w600),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 5),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              lang == 'ar' ? 'الإجمالي النهائي:' : 'Grand Total:',
+                              style: const TextStyle(fontSize: 12.5, fontWeight: FontWeight.w800),
+                            ),
+                            Text(
+                              '${totalAmount.toStringAsFixed(2)} ${AppStrings.get('currency', lang)}',
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w900,
+                                color: AppColors.primary,
+                              ),
+                            ),
+                          ],
+                        ),
+
+                        const SizedBox(height: 10),
+                        // Simulated QR Code for e-invoicing
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(color: Colors.grey.shade300),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Icon(Icons.qr_code_2_rounded, size: 32, color: Colors.black87),
+                              const SizedBox(width: 8),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    lang == 'ar' ? 'فاتورة إلكترونية مطابقة' : 'ZATCA E-Invoice',
+                                    style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w700, color: Colors.black87),
+                                  ),
+                                  Text(
+                                    lang == 'ar' ? 'متوافقة مع هيئة الزكاة والضريبة' : 'Tax & Customs Authority Compliant',
+                                    style: TextStyle(fontSize: 7.5, color: Colors.grey.shade600),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 14),
+
+                  // Actions
+                  Row(
+                    children: [
+                      Expanded(
+                        child: OutlinedButton.icon(
+                          onPressed: () {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  lang == 'ar' ? 'جاري إرسال الفاتورة لطابعة الإيصالات الحرارية...' : 'Printing receipt to thermal printer...',
+                                ),
+                                backgroundColor: AppColors.primaryDark,
+                              ),
+                            );
+                          },
+                          style: OutlinedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(vertical: 9),
+                            side: const BorderSide(color: AppColors.primary),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                          ),
+                          icon: const Icon(Icons.print_outlined, size: 15, color: AppColors.primary),
+                          label: Text(
+                            lang == 'ar' ? 'طباعة' : 'Print',
+                            style: const TextStyle(fontSize: 11.5, fontWeight: FontWeight.w700, color: AppColors.primary),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: () => Navigator.pop(ctx),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.primary,
+                            padding: const EdgeInsets.symmetric(vertical: 9),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                          ),
+                          child: Text(
+                            lang == 'ar' ? 'إتمام' : 'Done',
+                            style: const TextStyle(fontSize: 11.5, fontWeight: FontWeight.w800, color: Colors.white),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }
