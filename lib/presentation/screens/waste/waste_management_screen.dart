@@ -124,46 +124,69 @@ class WasteManagementScreen extends ConsumerWidget {
                       ? (loss / wasteState.totalFinancialLoss)
                       : 0.0;
 
+                  final color = _getReasonColor(reason);
+                  final icon = _getReasonIcon(reason);
+
                   return Container(
                     margin: const EdgeInsets.only(bottom: 8),
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
                       color: isDark ? AppColors.surfaceDark : Colors.white,
-                      borderRadius: BorderRadius.circular(14),
+                      borderRadius: BorderRadius.circular(16),
                       border: Border.all(
                         color: isDark ? AppColors.borderDark : AppColors.borderLight,
                       ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: color.withValues(alpha: 0.05),
+                          blurRadius: 8,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
                     ),
                     child: Column(
                       children: [
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(
-                              reason.getLocalized(lang),
-                              style: TextStyle(
-                                fontSize: 13,
-                                fontWeight: FontWeight.w600,
-                                color: isDark ? Colors.white : AppColors.textPrimaryLight,
-                              ),
+                            Row(
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.all(5),
+                                  decoration: BoxDecoration(
+                                    color: color.withValues(alpha: 0.15),
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Icon(icon, size: 14, color: color),
+                                ),
+                                const SizedBox(width: 8),
+                                Text(
+                                  reason.getLocalized(lang),
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w700,
+                                    color: isDark ? Colors.white : AppColors.textPrimaryLight,
+                                  ),
+                                ),
+                              ],
                             ),
                             Text(
                               '${loss.toStringAsFixed(1)} ${AppStrings.get('currency', lang)} (${(pct * 100).toStringAsFixed(0)}%)',
                               style: TextStyle(
                                 fontSize: 12,
-                                fontWeight: FontWeight.w700,
-                                color: AppColors.spoilageRed,
+                                fontWeight: FontWeight.w800,
+                                color: color,
                               ),
                             ),
                           ],
                         ),
                         const SizedBox(height: 8),
                         ClipRRect(
-                          borderRadius: BorderRadius.circular(4),
+                          borderRadius: BorderRadius.circular(6),
                           child: LinearProgressIndicator(
                             value: pct,
                             backgroundColor: isDark ? Colors.white10 : AppColors.borderLight,
-                            valueColor: const AlwaysStoppedAnimation<Color>(AppColors.spoilageRed),
+                            valueColor: AlwaysStoppedAnimation<Color>(color),
                             minHeight: 6,
                           ),
                         ),
@@ -417,5 +440,35 @@ class WasteManagementScreen extends ConsumerWidget {
         ],
       ),
     );
+  }
+
+  Color _getReasonColor(WasteReason reason) {
+    switch (reason) {
+      case WasteReason.wiltingAndRot:
+        return const Color(0xFFEF4444);
+      case WasteReason.transitDamage:
+        return const Color(0xFFF97316);
+      case WasteReason.poorCooling:
+        return const Color(0xFF3B82F6);
+      case WasteReason.pestContamination:
+        return const Color(0xFFA855F7);
+      case WasteReason.other:
+        return const Color(0xFF64748B);
+    }
+  }
+
+  IconData _getReasonIcon(WasteReason reason) {
+    switch (reason) {
+      case WasteReason.wiltingAndRot:
+        return Icons.eco_rounded;
+      case WasteReason.transitDamage:
+        return Icons.local_shipping_rounded;
+      case WasteReason.poorCooling:
+        return Icons.ac_unit_rounded;
+      case WasteReason.pestContamination:
+        return Icons.bug_report_rounded;
+      case WasteReason.other:
+        return Icons.more_horiz_rounded;
+    }
   }
 }

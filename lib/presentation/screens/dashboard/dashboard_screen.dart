@@ -6,6 +6,7 @@ import '../../../core/localization/app_locale_provider.dart';
 import '../../controllers/inventory_controller.dart';
 import '../../controllers/waste_controller.dart';
 import '../../controllers/pos_controller.dart';
+import '../../controllers/auth_controller.dart';
 import '../inventory/produce_details_screen.dart';
 import '../inventory/add_edit_produce_dialog.dart';
 import '../waste/record_waste_dialog.dart';
@@ -29,6 +30,7 @@ class DashboardScreen extends ConsumerWidget {
     final inventoryAsync = ref.watch(inventoryNotifierProvider);
     final wasteAsync = ref.watch(wasteNotifierProvider);
     final posState = ref.watch(posNotifierProvider);
+    final authState = ref.watch(authNotifierProvider);
 
     return inventoryAsync.when(
       loading: () => const Center(child: CircularProgressIndicator(color: AppColors.primary)),
@@ -49,6 +51,122 @@ class DashboardScreen extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // Executive Store & Staff Greeting Card
+                Container(
+                  margin: const EdgeInsets.only(bottom: 16),
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: isDark
+                          ? [
+                              const Color(0xFF1E293B),
+                              const Color(0xFF0F172A),
+                            ]
+                          : [
+                              Colors.white,
+                              const Color(0xFFF0FDF4),
+                            ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(
+                      color: isDark ? AppColors.borderDark : AppColors.borderLight,
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColors.primary.withValues(alpha: isDark ? 0.08 : 0.04),
+                        blurRadius: 14,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 44,
+                        height: 44,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: AppColors.primary.withValues(alpha: 0.12),
+                          border: Border.all(
+                            color: AppColors.primary.withValues(alpha: 0.3),
+                            width: 1.5,
+                          ),
+                        ),
+                        child: Center(
+                          child: Text(
+                            authState.currentUser?.avatarEmoji ?? '🌿',
+                            style: const TextStyle(fontSize: 22),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              '${lang == 'ar' ? 'مرحباً،' : 'Welcome,'} ${authState.currentUser?.name ?? (lang == 'ar' ? 'أبو صالح' : 'Manager')}',
+                              style: TextStyle(
+                                fontSize: 14.5,
+                                fontWeight: FontWeight.w800,
+                                color: isDark ? AppColors.textPrimaryDark : AppColors.textPrimaryLight,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            const SizedBox(height: 2),
+                            Text(
+                              lang == 'ar'
+                                  ? 'سوق الخضار والتموين • العمليات النشطة'
+                                  : 'Fresh Produce ERP • Live Terminal',
+                              style: TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.w500,
+                                color: isDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
+                        decoration: BoxDecoration(
+                          color: AppColors.successLight,
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(
+                            color: AppColors.successGreen.withValues(alpha: 0.3),
+                            width: 0.8,
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Container(
+                              width: 6,
+                              height: 6,
+                              decoration: const BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: AppColors.successGreen,
+                              ),
+                            ),
+                            const SizedBox(width: 5),
+                            Text(
+                              lang == 'ar' ? 'نشط' : 'Active',
+                              style: const TextStyle(
+                                fontSize: 10,
+                                fontWeight: FontWeight.w800,
+                                color: AppColors.successGreen,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
                 // Quick Action Bar
                 Row(
                   children: [
@@ -84,12 +202,19 @@ class DashboardScreen extends ConsumerWidget {
                     const SizedBox(width: 10),
                     InkWell(
                       onTap: () => onNavigateToTab?.call(2), // POS tab
-                      borderRadius: BorderRadius.circular(14),
+                      borderRadius: BorderRadius.circular(16),
                       child: Container(
-                        padding: const EdgeInsets.all(12),
+                        padding: const EdgeInsets.all(13),
                         decoration: BoxDecoration(
                           gradient: AppColors.citrusGradient,
-                          borderRadius: BorderRadius.circular(14),
+                          borderRadius: BorderRadius.circular(16),
+                          boxShadow: [
+                            BoxShadow(
+                              color: AppColors.secondary.withValues(alpha: 0.25),
+                              blurRadius: 10,
+                              offset: const Offset(0, 3),
+                            ),
+                          ],
                         ),
                         child: const Icon(
                           Icons.point_of_sale_rounded,
@@ -207,10 +332,10 @@ class DashboardScreen extends ConsumerWidget {
                 const SizedBox(height: 8),
 
                 SizedBox(
-                  height: 110,
+                  height: 122,
                   child: ListView.separated(
                     scrollDirection: Axis.horizontal,
-                    itemCount: inventory.allItems.take(5).length,
+                    itemCount: inventory.allItems.take(6).length,
                     separatorBuilder: (context, index) => const SizedBox(width: 12),
                     itemBuilder: (context, index) {
                       final item = inventory.allItems[index];
@@ -223,16 +348,23 @@ class DashboardScreen extends ConsumerWidget {
                             ),
                           );
                         },
-                        borderRadius: BorderRadius.circular(16),
+                        borderRadius: BorderRadius.circular(18),
                         child: Container(
-                          width: 140,
-                          padding: const EdgeInsets.all(10),
+                          width: 148,
+                          padding: const EdgeInsets.all(12),
                           decoration: BoxDecoration(
                             color: isDark ? AppColors.surfaceDark : Colors.white,
-                            borderRadius: BorderRadius.circular(16),
+                            borderRadius: BorderRadius.circular(18),
                             border: Border.all(
                               color: isDark ? AppColors.borderDark : AppColors.borderLight,
                             ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.04),
+                                blurRadius: 10,
+                                offset: const Offset(0, 3),
+                              ),
+                            ],
                           ),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -241,19 +373,33 @@ class DashboardScreen extends ConsumerWidget {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Text(item.emoji, style: const TextStyle(fontSize: 22)),
                                   Container(
-                                    padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                                    width: 38,
+                                    height: 38,
                                     decoration: BoxDecoration(
-                                      color: AppColors.primaryLight,
-                                      borderRadius: BorderRadius.circular(6),
+                                      color: isDark ? Colors.white.withValues(alpha: 0.06) : AppColors.primaryLight.withValues(alpha: 0.6),
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    child: Center(
+                                      child: Text(item.emoji, style: const TextStyle(fontSize: 20)),
+                                    ),
+                                  ),
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2.5),
+                                    decoration: BoxDecoration(
+                                      color: item.freshnessScore >= 0.8
+                                          ? AppColors.successLight
+                                          : (item.freshnessScore >= 0.5 ? AppColors.secondaryLight : AppColors.spoilageLight),
+                                      borderRadius: BorderRadius.circular(8),
                                     ),
                                     child: Text(
                                       '${(item.freshnessScore * 100).toInt()}%',
-                                      style: const TextStyle(
-                                        fontSize: 9,
+                                      style: TextStyle(
+                                        fontSize: 9.5,
                                         fontWeight: FontWeight.w800,
-                                        color: AppColors.primaryDark,
+                                        color: item.freshnessScore >= 0.8
+                                            ? AppColors.successGreen
+                                            : (item.freshnessScore >= 0.5 ? AppColors.secondaryDark : AppColors.spoilageRed),
                                       ),
                                     ),
                                   ),
@@ -262,8 +408,8 @@ class DashboardScreen extends ConsumerWidget {
                               Text(
                                 item.getName(lang),
                                 style: TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w700,
+                                  fontSize: 12.5,
+                                  fontWeight: FontWeight.w800,
                                   color: isDark ? Colors.white : AppColors.textPrimaryLight,
                                 ),
                                 maxLines: 1,
@@ -275,8 +421,8 @@ class DashboardScreen extends ConsumerWidget {
                                   Text(
                                     '${item.sellingPrice.toStringAsFixed(1)} ${AppStrings.get('currency', lang)}',
                                     style: const TextStyle(
-                                      fontSize: 11,
-                                      fontWeight: FontWeight.w800,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w900,
                                       color: AppColors.primary,
                                     ),
                                   ),
@@ -284,6 +430,7 @@ class DashboardScreen extends ConsumerWidget {
                                     '${item.currentStock.toInt()} ${item.unit.getLocalized(lang)}',
                                     style: TextStyle(
                                       fontSize: 10,
+                                      fontWeight: FontWeight.w600,
                                       color: isDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight,
                                     ),
                                   ),
@@ -296,7 +443,7 @@ class DashboardScreen extends ConsumerWidget {
                     },
                   ),
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: 28),
               ],
             ),
           ),
@@ -316,26 +463,43 @@ class DashboardScreen extends ConsumerWidget {
 
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(14),
+      borderRadius: BorderRadius.circular(16),
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
         decoration: BoxDecoration(
-          color: color.withValues(alpha: 0.1),
-          borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: color.withValues(alpha: 0.25)),
+          color: isDark ? AppColors.surfaceDark : Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+            color: color.withValues(alpha: isDark ? 0.35 : 0.25),
+            width: 1.2,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: color.withValues(alpha: 0.08),
+              blurRadius: 10,
+              offset: const Offset(0, 3),
+            ),
+          ],
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, color: color, size: 18),
-            const SizedBox(width: 6),
+            Container(
+              padding: const EdgeInsets.all(5),
+              decoration: BoxDecoration(
+                color: color.withValues(alpha: 0.12),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(icon, color: color, size: 16),
+            ),
+            const SizedBox(width: 8),
             Flexible(
               child: Text(
                 label,
                 style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w700,
-                  color: isDark ? Colors.white : color,
+                  color: isDark ? Colors.white : AppColors.textPrimaryLight,
                 ),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,

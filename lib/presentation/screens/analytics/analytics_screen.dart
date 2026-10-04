@@ -104,7 +104,7 @@ class AnalyticsScreen extends ConsumerWidget {
                             borderRadius: BorderRadius.circular(6),
                           ),
                           child: Text(
-                            '${(100 - wastePercent).toStringAsFixed(1)}% كفاءة',
+                            '${(100 - wastePercent).toStringAsFixed(1)}% ${lang == 'ar' ? 'كفاءة' : 'Efficiency'}',
                             style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w700, color: Colors.white),
                           ),
                         ),
@@ -112,7 +112,7 @@ class AnalyticsScreen extends ConsumerWidget {
                     ),
                     const SizedBox(height: 6),
                     Align(
-                      alignment: Alignment.centerLeft,
+                      alignment: AlignmentDirectional.centerStart,
                       child: Text(
                         '${netProfit.toStringAsFixed(2)} ${AppStrings.get('currency', lang)}',
                         style: const TextStyle(fontSize: 26, fontWeight: FontWeight.w900, color: Colors.white),
@@ -208,37 +208,58 @@ class AnalyticsScreen extends ConsumerWidget {
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: isDark ? const Color(0xFF132E24) : AppColors.primaryLight.withValues(alpha: 0.5),
-                  borderRadius: BorderRadius.circular(18),
-                  border: Border.all(color: AppColors.primary.withValues(alpha: 0.3)),
+                  color: isDark ? const Color(0xFF132E24) : const Color(0xFFECFDF5),
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: AppColors.primary.withValues(alpha: 0.35), width: 1.2),
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.primary.withValues(alpha: 0.06),
+                      blurRadius: 12,
+                      offset: const Offset(0, 3),
+                    ),
+                  ],
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
                       children: [
-                        const Icon(Icons.lightbulb_outline_rounded, color: AppColors.primaryDark, size: 20),
-                        const SizedBox(width: 8),
+                        Container(
+                          padding: const EdgeInsets.all(6),
+                          decoration: BoxDecoration(
+                            color: AppColors.primary.withValues(alpha: 0.15),
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(Icons.auto_awesome_rounded, color: AppColors.primaryDark, size: 18),
+                        ),
+                        const SizedBox(width: 10),
                         Text(
-                          lang == 'ar' ? 'توصيات الذكاء الاصطناعي لتقليل الهدر' : 'AI Stock Recommendations',
+                          lang == 'ar' ? 'توصيات الذكاء الاصطناعي لمنع الهدر' : 'AI Waste-Prevention Insights',
                           style: const TextStyle(
-                            fontSize: 13,
-                            fontWeight: FontWeight.w700,
+                            fontSize: 13.5,
+                            fontWeight: FontWeight.w800,
                             color: AppColors.primaryDark,
                           ),
                         ),
                       ],
                     ),
+                    const SizedBox(height: 12),
+                    _buildInsightRow(
+                      icon: Icons.percent_rounded,
+                      color: AppColors.secondary,
+                      text: lang == 'ar'
+                          ? 'الفراولة والخس الروماني يقتربان من الذبول: ينصح بتطبيق خصم 20% لتصريفهما خلال 24 ساعة.'
+                          : 'Strawberries & Romaine wilting soon: apply 20% rescue markdown to liquidate within 24h.',
+                      isDark: isDark,
+                    ),
                     const SizedBox(height: 8),
-                    Text(
-                      lang == 'ar'
-                          ? '• الفراولة والخس الروماني يقتربان من الذبول: قم بتخفيض سعرهما 20% لتصريفهما خلال 24 ساعة.\n• صنف الخيار وصل للحد الأدنى، ينصح بطلب دفعة توريد جديدة قبل الغد.'
-                          : '• Strawberries and Romaine Lettuce wilting soon: apply 20% discount to clear stock within 24h.\n• Cucumbers hit reorder threshold, plan supplier purchase order.',
-                      style: TextStyle(
-                        fontSize: 12,
-                        height: 1.5,
-                        color: isDark ? Colors.white70 : AppColors.textPrimaryLight,
-                      ),
+                    _buildInsightRow(
+                      icon: Icons.add_shopping_cart_rounded,
+                      color: AppColors.primary,
+                      text: lang == 'ar'
+                          ? 'صنف الخيار وصل للحد الأدنى للمخزون: ينصح بطلب دفعة توريد جديدة قبل الغد لتغطية الطلب.'
+                          : 'Greenhouse Cucumbers hit low threshold: place supplier purchase order before tomorrow.',
+                      isDark: isDark,
                     ),
                   ],
                 ),
@@ -283,6 +304,40 @@ class AnalyticsScreen extends ConsumerWidget {
             fontSize: 11,
             fontWeight: FontWeight.w600,
             color: isDark ? Colors.white70 : AppColors.textPrimaryLight,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildInsightRow({
+    required IconData icon,
+    required Color color,
+    required String text,
+    required bool isDark,
+  }) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          margin: const EdgeInsets.only(top: 2),
+          padding: const EdgeInsets.all(4),
+          decoration: BoxDecoration(
+            color: color.withValues(alpha: 0.15),
+            borderRadius: BorderRadius.circular(6),
+          ),
+          child: Icon(icon, color: color, size: 12),
+        ),
+        const SizedBox(width: 8),
+        Expanded(
+          child: Text(
+            text,
+            style: TextStyle(
+              fontSize: 11.5,
+              height: 1.45,
+              fontWeight: FontWeight.w600,
+              color: isDark ? Colors.white70 : AppColors.textPrimaryLight,
+            ),
           ),
         ),
       ],

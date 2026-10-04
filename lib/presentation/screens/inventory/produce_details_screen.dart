@@ -428,12 +428,26 @@ class ProduceDetailsScreen extends ConsumerWidget {
         color: isDark ? AppColors.surfaceDark : Colors.white,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: isDark ? AppColors.borderDark : AppColors.borderLight),
+        boxShadow: [
+          BoxShadow(
+            color: color.withValues(alpha: 0.06),
+            blurRadius: 10,
+            offset: const Offset(0, 3),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, color: color, size: 18),
-          const SizedBox(height: 6),
+          Container(
+            padding: const EdgeInsets.all(6),
+            decoration: BoxDecoration(
+              color: color.withValues(alpha: 0.12),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Icon(icon, color: color, size: 16),
+          ),
+          const SizedBox(height: 8),
           Text(
             title,
             style: TextStyle(
@@ -455,7 +469,7 @@ class ProduceDetailsScreen extends ConsumerWidget {
             caption,
             style: TextStyle(
               fontSize: 10,
-              fontWeight: FontWeight.w600,
+              fontWeight: FontWeight.w700,
               color: color,
             ),
           ),
