@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_typography.dart';
 import '../../../core/localization/app_locale_provider.dart';
+import '../../../core/utils/app_haptics.dart';
 import '../../controllers/inventory_controller.dart';
 import '../../controllers/pos_controller.dart';
 import '../../controllers/auth_controller.dart';
@@ -11,6 +12,7 @@ import 'add_edit_produce_dialog.dart';
 import 'widgets/category_filter_bar.dart';
 import 'widgets/produce_grid_card.dart';
 import 'widgets/produce_list_item.dart';
+import '../../widgets/app_shimmer_skeleton.dart';
 
 class InventoryScreen extends ConsumerWidget {
   const InventoryScreen({super.key});
@@ -25,7 +27,7 @@ class InventoryScreen extends ConsumerWidget {
 
     return Scaffold(
       body: inventoryAsync.when(
-        loading: () => const Center(child: CircularProgressIndicator(color: AppColors.primary)),
+        loading: () => const ProduceGridSkeleton(),
         error: (err, _) => Center(child: Text('Error: $err')),
         data: (inventory) {
           final items = inventory.filteredItems;
@@ -198,7 +200,9 @@ class InventoryScreen extends ConsumerWidget {
       floatingActionButton: ref.watch(authNotifierProvider).isCashier
           ? null
           : FloatingActionButton.extended(
+              heroTag: 'inventory_add_produce_fab',
               onPressed: () {
+                AppHaptics.medium();
                 showDialog(
                   context: context,
                   builder: (_) => const AddEditProduceDialog(),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/localization/app_locale_provider.dart';
+import '../../../core/utils/app_haptics.dart';
 import '../../controllers/inventory_controller.dart';
 import '../../controllers/pos_controller.dart';
 
@@ -75,6 +76,7 @@ class _QuickPosScreenState extends ConsumerState<QuickPosScreen> {
 
                           return InkWell(
                             onTap: () {
+                              AppHaptics.light();
                               ref.read(posNotifierProvider.notifier).selectProduce(item);
                             },
                             borderRadius: BorderRadius.circular(14),
@@ -406,6 +408,7 @@ class _QuickPosScreenState extends ConsumerState<QuickPosScreen> {
                                         height: 34,
                                         child: ElevatedButton.icon(
                                           onPressed: () {
+                                            AppHaptics.medium();
                                             ref.read(posNotifierProvider.notifier).addToCart();
                                           },
                                           style: ElevatedButton.styleFrom(
@@ -585,6 +588,7 @@ class _QuickPosScreenState extends ConsumerState<QuickPosScreen> {
                                 onPressed: posState.cart.isEmpty
                                     ? null
                                     : () async {
+                                        AppHaptics.success();
                                         final savedCart = List<CartItem>.from(posState.cart);
                                         final savedTotal = posState.cartTotal;
                                         await ref.read(posNotifierProvider.notifier).checkout();
@@ -624,6 +628,7 @@ class _QuickPosScreenState extends ConsumerState<QuickPosScreen> {
   Widget _buildPresetBtn(double delta, String label) {
     return InkWell(
       onTap: () {
+        AppHaptics.selection();
         final current = ref.read(posNotifierProvider).inputWeight;
         ref.read(posNotifierProvider.notifier).updateWeight(current + delta);
       },
@@ -644,7 +649,10 @@ class _QuickPosScreenState extends ConsumerState<QuickPosScreen> {
 
   Widget _buildResetBtn() {
     return InkWell(
-      onTap: () => ref.read(posNotifierProvider.notifier).updateWeight(1.0),
+      onTap: () {
+        AppHaptics.selection();
+        ref.read(posNotifierProvider.notifier).updateWeight(1.0);
+      },
       borderRadius: BorderRadius.circular(6),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 3),

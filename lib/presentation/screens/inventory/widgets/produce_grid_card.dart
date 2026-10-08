@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_typography.dart';
+import '../../../../core/utils/app_haptics.dart';
 import '../../../../data/models/produce_item.dart';
 import '../../../widgets/frosted_glass_container.dart';
 import 'freshness_badge.dart';
@@ -26,7 +27,10 @@ class ProduceGridCard extends StatelessWidget {
     return FrostedGlassContainer(
       padding: const EdgeInsets.all(12),
       borderRadius: 18,
-      onTap: onTap,
+      onTap: () {
+        AppHaptics.light();
+        onTap();
+      },
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -35,19 +39,25 @@ class ProduceGridCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                width: 48,
-                height: 48,
-                decoration: BoxDecoration(
-                  color: isDark
-                      ? Colors.white.withValues(alpha: 0.06)
-                      : AppColors.primaryLight.withValues(alpha: 0.6),
-                  borderRadius: BorderRadius.circular(14),
-                ),
-                child: Center(
-                  child: Text(
-                    item.emoji,
-                    style: const TextStyle(fontSize: 26),
+              Hero(
+                tag: 'produce_emoji_${item.id}',
+                child: Material(
+                  color: Colors.transparent,
+                  child: Container(
+                    width: 48,
+                    height: 48,
+                    decoration: BoxDecoration(
+                      color: isDark
+                          ? Colors.white.withValues(alpha: 0.06)
+                          : AppColors.primaryLight.withValues(alpha: 0.6),
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                    child: Center(
+                      child: Text(
+                        item.emoji,
+                        style: const TextStyle(fontSize: 26),
+                      ),
+                    ),
                   ),
                 ),
               ),
@@ -205,7 +215,10 @@ class ProduceGridCard extends StatelessWidget {
               // Quick action button
               if (onQuickAction != null)
                 InkWell(
-                  onTap: onQuickAction,
+                  onTap: () {
+                    AppHaptics.medium();
+                    onQuickAction!();
+                  },
                   borderRadius: BorderRadius.circular(10),
                   child: Container(
                     padding: const EdgeInsets.all(6),

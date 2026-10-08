@@ -1,28 +1,38 @@
 import 'package:flutter/material.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_typography.dart';
+import '../../../../core/utils/app_haptics.dart';
+import '../../../widgets/animated_counting_number.dart';
 import '../../../widgets/frosted_glass_container.dart';
 
 class KpiCard extends StatelessWidget {
   final String title;
   final String value;
+  final double? numericValue;
+  final String? currencySuffix;
+  final int decimalDigits;
   final String? subtitle;
   final IconData icon;
   final Color iconColor;
   final Color iconBgColor;
   final String? trendText;
   final bool isTrendPositive;
+  final VoidCallback? onTap;
 
   const KpiCard({
     super.key,
     required this.title,
     required this.value,
+    this.numericValue,
+    this.currencySuffix,
+    this.decimalDigits = 0,
     this.subtitle,
     required this.icon,
     required this.iconColor,
     required this.iconBgColor,
     this.trendText,
     this.isTrendPositive = true,
+    this.onTap,
   });
 
   @override
@@ -32,6 +42,10 @@ class KpiCard extends StatelessWidget {
     return FrostedGlassContainer(
       padding: const EdgeInsets.all(14),
       borderRadius: 20,
+      onTap: () {
+        AppHaptics.light();
+        onTap?.call();
+      },
       child: Stack(
         children: [
           // Ambient soft glow in the corner
@@ -124,14 +138,25 @@ class KpiCard extends StatelessWidget {
               FittedBox(
                 fit: BoxFit.scaleDown,
                 alignment: AlignmentDirectional.centerStart,
-                child: Text(
-                  value,
-                  style: AppTypography.numberMedium(isDark: isDark).copyWith(
-                    fontWeight: FontWeight.w900,
-                    fontSize: 20,
-                    letterSpacing: -0.2,
-                  ),
-                ),
+                child: numericValue != null
+                    ? AnimatedCountingNumber(
+                        value: numericValue!,
+                        decimalDigits: decimalDigits,
+                        suffix: currencySuffix != null ? ' $currencySuffix' : '',
+                        style: AppTypography.numberMedium(isDark: isDark).copyWith(
+                          fontWeight: FontWeight.w900,
+                          fontSize: 20,
+                          letterSpacing: -0.2,
+                        ),
+                      )
+                    : Text(
+                        value,
+                        style: AppTypography.numberMedium(isDark: isDark).copyWith(
+                          fontWeight: FontWeight.w900,
+                          fontSize: 20,
+                          letterSpacing: -0.2,
+                        ),
+                      ),
               ),
               if (subtitle != null) ...[
                 const SizedBox(height: 2),

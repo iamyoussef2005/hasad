@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_typography.dart';
 import '../../../../core/localization/app_locale_provider.dart';
+import '../../../../core/utils/app_haptics.dart';
 import '../../../../data/models/markdown_proposal.dart';
 import '../../../controllers/markdown_controller.dart';
 import '../../ai_scanner/ai_freshness_scanner_screen.dart';
@@ -188,6 +189,7 @@ class AiMarkdownInsightsCard extends ConsumerWidget {
                 ),
                 TextButton.icon(
                   onPressed: () {
+                    AppHaptics.heavy();
                     ref.read(markdownNotifierProvider.notifier).applyAllProposals();
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
@@ -322,6 +324,7 @@ class AiMarkdownInsightsCard extends ConsumerWidget {
             height: 32,
             child: ElevatedButton.icon(
               onPressed: () {
+                AppHaptics.heavy();
                 ref.read(markdownNotifierProvider.notifier).applyMarkdown(proposal);
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(

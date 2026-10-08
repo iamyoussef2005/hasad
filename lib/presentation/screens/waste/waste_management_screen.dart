@@ -5,8 +5,10 @@ import 'package:fl_chart/fl_chart.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_typography.dart';
 import '../../../core/localization/app_locale_provider.dart';
+import '../../../core/utils/app_haptics.dart';
 import '../../../data/models/waste_record.dart';
 import '../../controllers/waste_controller.dart';
+import '../../widgets/animated_counting_number.dart';
 import 'record_waste_dialog.dart';
 
 class WasteManagementScreen extends ConsumerWidget {
@@ -88,8 +90,10 @@ class WasteManagementScreen extends ConsumerWidget {
                         ],
                       ),
                       const SizedBox(height: 8),
-                      Text(
-                        '${wasteState.totalFinancialLoss.toStringAsFixed(2)} ${AppStrings.get('currency', lang)}',
+                      AnimatedCountingNumber(
+                        value: wasteState.totalFinancialLoss,
+                        decimalDigits: 2,
+                        suffix: ' ${AppStrings.get('currency', lang)}',
                         style: const TextStyle(
                           fontSize: 28,
                           fontWeight: FontWeight.w900,
@@ -313,7 +317,9 @@ class WasteManagementScreen extends ConsumerWidget {
         },
       ),
       floatingActionButton: FloatingActionButton.extended(
+        heroTag: 'waste_record_produce_fab',
         onPressed: () {
+          AppHaptics.medium();
           showDialog(
             context: context,
             builder: (_) => const RecordWasteDialog(),

@@ -15,6 +15,7 @@ import 'widgets/freshness_gauge_widget.dart';
 import 'widgets/weekly_waste_chart.dart';
 import 'widgets/low_stock_banner.dart';
 import 'widgets/ai_markdown_insights_card.dart';
+import '../../widgets/app_shimmer_skeleton.dart';
 
 class DashboardScreen extends ConsumerWidget {
   final Function(int)? onNavigateToTab;
@@ -33,7 +34,7 @@ class DashboardScreen extends ConsumerWidget {
     final authState = ref.watch(authNotifierProvider);
 
     return inventoryAsync.when(
-      loading: () => const Center(child: CircularProgressIndicator(color: AppColors.primary)),
+      loading: () => const DashboardSkeleton(),
       error: (err, _) => Center(child: Text('Error: $err')),
       data: (inventory) {
         final wasteState = wasteAsync.value ?? const WasteState(records: []);
@@ -257,6 +258,9 @@ class DashboardScreen extends ConsumerWidget {
                     KpiCard(
                       title: AppStrings.get('total_inventory_value', lang),
                       value: '${inventory.totalStockValue.toStringAsFixed(0)} ${AppStrings.get('currency', lang)}',
+                      numericValue: inventory.totalStockValue,
+                      currencySuffix: AppStrings.get('currency', lang),
+                      decimalDigits: 0,
                       subtitle: '${inventory.allItems.length} ${lang == 'ar' ? 'صنف مسجل' : 'items'}',
                       icon: Icons.inventory_2_rounded,
                       iconColor: AppColors.primary,
@@ -267,6 +271,9 @@ class DashboardScreen extends ConsumerWidget {
                     KpiCard(
                       title: AppStrings.get('todays_sales', lang),
                       value: '${posState.todaySalesTotal.toStringAsFixed(0)} ${AppStrings.get('currency', lang)}',
+                      numericValue: posState.todaySalesTotal,
+                      currencySuffix: AppStrings.get('currency', lang),
+                      decimalDigits: 0,
                       subtitle: lang == 'ar' ? 'أداء ممتاز اليوم' : 'Target achieved',
                       icon: Icons.trending_up_rounded,
                       iconColor: AppColors.secondaryDark,
@@ -277,6 +284,9 @@ class DashboardScreen extends ConsumerWidget {
                     KpiCard(
                       title: AppStrings.get('spoilage_loss', lang),
                       value: '${wasteState.totalFinancialLoss.toStringAsFixed(1)} ${AppStrings.get('currency', lang)}',
+                      numericValue: wasteState.totalFinancialLoss,
+                      currencySuffix: AppStrings.get('currency', lang),
+                      decimalDigits: 1,
                       subtitle: '${wasteState.records.length} ${lang == 'ar' ? 'عمليات إتلاف' : 'logs'}',
                       icon: Icons.delete_outline_rounded,
                       iconColor: AppColors.spoilageRed,
@@ -287,6 +297,8 @@ class DashboardScreen extends ConsumerWidget {
                     KpiCard(
                       title: AppStrings.get('low_stock_items', lang),
                       value: '${inventory.lowStockCount}',
+                      numericValue: inventory.lowStockCount.toDouble(),
+                      decimalDigits: 0,
                       subtitle: lang == 'ar' ? 'يحتاج إعادة شراء' : 'Need reordering',
                       icon: Icons.warning_amber_rounded,
                       iconColor: AppColors.warningOrange,

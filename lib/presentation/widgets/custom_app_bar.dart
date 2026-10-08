@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/localization/app_locale_provider.dart';
+import '../../core/utils/app_haptics.dart';
 import '../../data/models/app_user.dart';
 import '../controllers/auth_controller.dart';
+import 'pulsing_badge.dart';
 
 class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
   final String? title;
@@ -128,22 +130,11 @@ class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
                   Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Container(
-                        width: 6,
-                        height: 6,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: AppColors.successGreen,
-                          boxShadow: [
-                            BoxShadow(
-                              color: AppColors.successGreen.withValues(alpha: 0.6),
-                              blurRadius: 4,
-                              spreadRadius: 1,
-                            ),
-                          ],
-                        ),
+                      const PulsingBadge(
+                        color: AppColors.successGreen,
+                        size: 6,
                       ),
-                      const SizedBox(width: 5),
+                      const SizedBox(width: 4),
                       Text(
                         subtitle ?? (lang == 'ar' ? 'سحابي متصل' : 'Cloud Sync Active'),
                         style: TextStyle(
@@ -164,7 +155,10 @@ class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
 
             // Language Switcher Button
             InkWell(
-              onTap: () => ref.read(appLocaleProvider.notifier).toggleLocale(),
+              onTap: () {
+                AppHaptics.light();
+                ref.read(appLocaleProvider.notifier).toggleLocale();
+              },
               borderRadius: BorderRadius.circular(12),
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
@@ -196,7 +190,10 @@ class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
 
             // Dark Mode Switcher
             InkWell(
-              onTap: () => ref.read(appThemeModeProvider.notifier).toggleTheme(),
+              onTap: () {
+                AppHaptics.light();
+                ref.read(appThemeModeProvider.notifier).toggleTheme();
+              },
               borderRadius: BorderRadius.circular(12),
               child: Container(
                 width: 36,

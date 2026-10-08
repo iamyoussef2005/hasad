@@ -18,7 +18,6 @@ class FreshnessGaugeWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final percentage = (score * 100).toInt();
 
     final Color statusColor = score >= 0.8
         ? AppColors.primary
@@ -59,43 +58,51 @@ class FreshnessGaugeWidget extends StatelessWidget {
                     ),
                   ],
                 ),
-                child: Stack(
-                  fit: StackFit.expand,
-                  children: [
-                    CircularProgressIndicator(
-                      value: score,
-                      strokeWidth: 8.5,
-                      backgroundColor: isDark
-                          ? Colors.white.withValues(alpha: 0.08)
-                          : AppColors.borderLight,
-                      valueColor: AlwaysStoppedAnimation<Color>(statusColor),
-                      strokeCap: StrokeCap.round,
-                    ),
-                    Center(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            '$percentage%',
-                            style: AppTypography.numberMedium(isDark: isDark).copyWith(
-                              color: statusColor,
-                              fontWeight: FontWeight.w900,
-                              fontSize: 19,
-                            ),
+                child: TweenAnimationBuilder<double>(
+                  tween: Tween<double>(begin: 0.0, end: score),
+                  duration: const Duration(milliseconds: 1200),
+                  curve: Curves.easeOutCubic,
+                  builder: (context, animScore, child) {
+                    final animPercentage = (animScore * 100).toInt();
+                    return Stack(
+                      fit: StackFit.expand,
+                      children: [
+                        CircularProgressIndicator(
+                          value: animScore,
+                          strokeWidth: 8.5,
+                          backgroundColor: isDark
+                              ? Colors.white.withValues(alpha: 0.08)
+                              : AppColors.borderLight,
+                          valueColor: AlwaysStoppedAnimation<Color>(statusColor),
+                          strokeCap: StrokeCap.round,
+                        ),
+                        Center(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                '$animPercentage%',
+                                style: AppTypography.numberMedium(isDark: isDark).copyWith(
+                                  color: statusColor,
+                                  fontWeight: FontWeight.w900,
+                                  fontSize: 19,
+                                ),
+                              ),
+                              Text(
+                                'INDEX',
+                                style: TextStyle(
+                                  fontSize: 8,
+                                  fontWeight: FontWeight.w800,
+                                  letterSpacing: 0.8,
+                                  color: isDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight,
+                                ),
+                              ),
+                            ],
                           ),
-                          Text(
-                            'INDEX',
-                            style: TextStyle(
-                              fontSize: 8,
-                              fontWeight: FontWeight.w800,
-                              letterSpacing: 0.8,
-                              color: isDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
+                        ),
+                      ],
+                    );
+                  },
                 ),
               ),
               const SizedBox(width: 16),

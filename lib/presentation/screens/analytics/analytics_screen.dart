@@ -4,10 +4,12 @@ import 'package:fl_chart/fl_chart.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_typography.dart';
 import '../../../core/localization/app_locale_provider.dart';
+import '../../../core/utils/app_haptics.dart';
 import '../../../data/models/produce_category.dart';
 import '../../controllers/inventory_controller.dart';
 import '../../controllers/waste_controller.dart';
 import '../../controllers/pos_controller.dart';
+import '../../widgets/animated_counting_number.dart';
 
 class AnalyticsScreen extends ConsumerWidget {
   const AnalyticsScreen({super.key});
@@ -48,6 +50,7 @@ class AnalyticsScreen extends ConsumerWidget {
                   ),
                   OutlinedButton.icon(
                     onPressed: () {
+                      AppHaptics.success();
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           content: Text(
@@ -113,8 +116,10 @@ class AnalyticsScreen extends ConsumerWidget {
                     const SizedBox(height: 6),
                     Align(
                       alignment: AlignmentDirectional.centerStart,
-                      child: Text(
-                        '${netProfit.toStringAsFixed(2)} ${AppStrings.get('currency', lang)}',
+                      child: AnimatedCountingNumber(
+                        value: netProfit,
+                        decimalDigits: 2,
+                        suffix: ' ${AppStrings.get('currency', lang)}',
                         style: const TextStyle(fontSize: 26, fontWeight: FontWeight.w900, color: Colors.white),
                       ),
                     ),

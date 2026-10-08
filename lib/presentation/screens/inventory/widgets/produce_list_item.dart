@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_typography.dart';
+import '../../../../core/utils/app_haptics.dart';
 import '../../../../data/models/produce_item.dart';
 import '../../../widgets/frosted_glass_container.dart';
 import 'freshness_badge.dart';
@@ -24,23 +25,32 @@ class ProduceListItem extends StatelessWidget {
     return FrostedGlassContainer(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       borderRadius: 16,
-      onTap: onTap,
+      onTap: () {
+        AppHaptics.light();
+        onTap();
+      },
       child: Row(
         children: [
-          // Emoji avatar
-          Container(
-            width: 46,
-            height: 46,
-            decoration: BoxDecoration(
-              color: isDark
-                  ? Colors.white.withValues(alpha: 0.05)
-                  : AppColors.primaryLight.withValues(alpha: 0.5),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Center(
-              child: Text(
-                item.emoji,
-                style: const TextStyle(fontSize: 24),
+          // Emoji avatar with Hero transition
+          Hero(
+            tag: 'produce_emoji_${item.id}',
+            child: Material(
+              color: Colors.transparent,
+              child: Container(
+                width: 46,
+                height: 46,
+                decoration: BoxDecoration(
+                  color: isDark
+                      ? Colors.white.withValues(alpha: 0.05)
+                      : AppColors.primaryLight.withValues(alpha: 0.5),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Center(
+                  child: Text(
+                    item.emoji,
+                    style: const TextStyle(fontSize: 24),
+                  ),
+                ),
               ),
             ),
           ),

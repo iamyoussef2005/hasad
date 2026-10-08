@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/localization/app_locale_provider.dart';
+import '../../core/utils/app_haptics.dart';
 import '../../data/models/app_user.dart';
 import '../controllers/auth_controller.dart';
 import '../widgets/custom_app_bar.dart';
@@ -25,6 +26,7 @@ class _MainShellScreenState extends ConsumerState<MainShellScreen> {
   UserRole? _previousRole;
 
   void _navigateToTab(int index) {
+    AppHaptics.selection();
     setState(() => _currentIndex = index);
   }
 

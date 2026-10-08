@@ -88,15 +88,21 @@ class ProduceDetailsScreen extends ConsumerWidget {
                   ),
                   child: Row(
                     children: [
-                      Container(
-                        width: 72,
-                        height: 72,
-                        decoration: BoxDecoration(
-                          color: Colors.white.withValues(alpha: 0.2),
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Center(
-                          child: Text(item.emoji, style: const TextStyle(fontSize: 40)),
+                      Hero(
+                        tag: 'produce_emoji_${item.id}',
+                        child: Material(
+                          color: Colors.transparent,
+                          child: Container(
+                            width: 72,
+                            height: 72,
+                            decoration: BoxDecoration(
+                              color: Colors.white.withValues(alpha: 0.2),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Center(
+                              child: Text(item.emoji, style: const TextStyle(fontSize: 40)),
+                            ),
+                          ),
                         ),
                       ),
                       const SizedBox(width: 16),
