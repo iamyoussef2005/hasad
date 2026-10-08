@@ -239,7 +239,7 @@ class AnalyticsScreen extends ConsumerWidget {
                         ),
                         const SizedBox(width: 10),
                         Text(
-                          lang == 'ar' ? 'توصيات الذكاء الاصطناعي لمنع الهدر' : 'AI Waste-Prevention Insights',
+                          lang == 'ar' ? 'توصيات ذكية لتفادي الهدر' : 'Smart Waste-Prevention Insights',
                           style: const TextStyle(
                             fontSize: 13.5,
                             fontWeight: FontWeight.w800,

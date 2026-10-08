@@ -115,7 +115,7 @@ class InventoryScreen extends ConsumerWidget {
                         ),
                         const SizedBox(width: 4),
                         Text(
-                          lang == 'ar' ? 'تحديث المخزون فوري' : 'Live Sync Active',
+                          lang == 'ar' ? 'جاهز للطلب والبيع' : 'In Stock & Ready',
                           style: TextStyle(
                             fontSize: 10,
                             color: isDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight,

@@ -89,11 +89,11 @@ class FreshnessGaugeWidget extends StatelessWidget {
                                 ),
                               ),
                               Text(
-                                'INDEX',
+                                lang == 'ar' ? 'مؤشر الجودة' : 'QUALITY',
                                 style: TextStyle(
                                   fontSize: 8,
                                   fontWeight: FontWeight.w800,
-                                  letterSpacing: 0.8,
+                                  letterSpacing: 0.5,
                                   color: isDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight,
                                 ),
                               ),

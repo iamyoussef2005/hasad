@@ -136,7 +136,7 @@ class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
                       ),
                       const SizedBox(width: 4),
                       Text(
-                        subtitle ?? (lang == 'ar' ? 'سحابي متصل' : 'Cloud Sync Active'),
+                        subtitle ?? (lang == 'ar' ? 'الفرع الرئيسي' : 'Main Branch'),
                         style: TextStyle(
                           fontSize: 10,
                           fontWeight: FontWeight.w600,
@@ -345,7 +345,7 @@ class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
                     ),
                     const SizedBox(height: 2),
                     Text(
-                      '${lang == 'ar' ? 'معرف الموظف:' : 'Employee ID:'} #${user.pinCode}',
+                      '${lang == 'ar' ? 'الرقم الوظيفي:' : 'Employee No:'} #${user.pinCode}',
                       style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700),
                     ),
                   ],

@@ -71,16 +71,16 @@ class _AiFreshnessScannerScreenState extends ConsumerState<AiFreshnessScannerScr
     setState(() {
       _isAnalyzing = true;
       _inspectionResult = null;
-      _analysisStep = '1/3 جاري معالجة الإطارات وعزل الخلفية...';
+      _analysisStep = '1/3 جاري مسح مظهر الثمار وتحديد الصنف...';
     });
 
     await Future.delayed(const Duration(milliseconds: 500));
     if (!mounted) return;
-    setState(() => _analysisStep = '2/3 تحليل تجعد الأنسجة ونسبة الكلوروفيل...');
+    setState(() => _analysisStep = '2/3 فحص نضارة القشرة ونسبة الرطوبة...');
 
     await Future.delayed(const Duration(milliseconds: 600));
     if (!mounted) return;
-    setState(() => _analysisStep = '3/3 قياس احتمالية التلف وتوليد التوصيات...');
+    setState(() => _analysisStep = '3/3 احتساب درجة الجودة وتوليد التوصيات...');
 
     ProduceItem itemToScan;
     if (_selectedItem != null) {
@@ -575,7 +575,7 @@ class _AiFreshnessScannerScreenState extends ConsumerState<AiFreshnessScannerScr
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    lang == 'ar' ? 'تقرير الفحص البصري الذكي' : 'AI Inspection Diagnostics',
+                    lang == 'ar' ? 'تقرير فحص جودة المحصول' : 'Produce Quality Diagnostics',
                     style: AppTypography.titleMedium(isDark: isDark).copyWith(fontSize: 14),
                   ),
                   const SizedBox(height: 2),
