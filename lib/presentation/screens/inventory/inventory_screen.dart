@@ -43,13 +43,22 @@ class InventoryScreen extends ConsumerWidget {
                     Expanded(
                       child: TextField(
                         onChanged: (val) {
-                          ref.read(inventoryNotifierProvider.notifier).setSearchQuery(val);
+                          ref
+                              .read(inventoryNotifierProvider.notifier)
+                              .setSearchQuery(val);
                         },
                         decoration: InputDecoration(
                           hintText: AppStrings.get('search_placeholder', lang),
                           hintStyle: AppTypography.bodySmall(isDark: isDark),
-                          prefixIcon: const Icon(Icons.search_rounded, size: 20, color: AppColors.primary),
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                          prefixIcon: const Icon(
+                            Icons.search_rounded,
+                            size: 20,
+                            color: AppColors.primary,
+                          ),
+                          contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 14,
+                            vertical: 10,
+                          ),
                         ),
                       ),
                     ),
@@ -57,7 +66,9 @@ class InventoryScreen extends ConsumerWidget {
                     // Grid / List View Toggle
                     InkWell(
                       onTap: () {
-                        ref.read(inventoryNotifierProvider.notifier).toggleViewMode();
+                        ref
+                            .read(inventoryNotifierProvider.notifier)
+                            .toggleViewMode();
                       },
                       borderRadius: BorderRadius.circular(12),
                       child: Container(
@@ -67,11 +78,15 @@ class InventoryScreen extends ConsumerWidget {
                           color: isDark ? AppColors.surfaceDark : Colors.white,
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(
-                            color: isDark ? AppColors.borderDark : AppColors.borderLight,
+                            color: isDark
+                                ? AppColors.borderDark
+                                : AppColors.borderLight,
                           ),
                         ),
                         child: Icon(
-                          inventory.isGridView ? Icons.view_list_rounded : Icons.grid_view_rounded,
+                          inventory.isGridView
+                              ? Icons.view_list_rounded
+                              : Icons.grid_view_rounded,
                           color: AppColors.primary,
                           size: 20,
                         ),
@@ -86,22 +101,27 @@ class InventoryScreen extends ConsumerWidget {
                 selectedCategory: inventory.selectedCategory,
                 lang: lang,
                 onCategorySelected: (cat) {
-                  ref.read(inventoryNotifierProvider.notifier).selectCategory(cat);
+                  ref
+                      .read(inventoryNotifierProvider.notifier)
+                      .selectCategory(cat);
                 },
               ),
               const SizedBox(height: 10),
 
               // Summary status bar (showing count of items)
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 4,
+                ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
                       '${items.length} ${lang == 'ar' ? 'صنف متوفر' : 'items found'}',
-                      style: AppTypography.bodySmall(isDark: isDark).copyWith(
-                        fontWeight: FontWeight.w700,
-                      ),
+                      style: AppTypography.bodySmall(
+                        isDark: isDark,
+                      ).copyWith(fontWeight: FontWeight.w700),
                     ),
                     Row(
                       children: [
@@ -115,10 +135,14 @@ class InventoryScreen extends ConsumerWidget {
                         ),
                         const SizedBox(width: 4),
                         Text(
-                          lang == 'ar' ? 'جاهز للطلب والبيع' : 'In Stock & Ready',
+                          lang == 'ar'
+                              ? 'جاهز للطلب والبيع'
+                              : 'In Stock & Ready',
                           style: TextStyle(
                             fontSize: 10,
-                            color: isDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight,
+                            color: isDark
+                                ? AppColors.textSecondaryDark
+                                : AppColors.textSecondaryLight,
                           ),
                         ),
                       ],
@@ -133,65 +157,77 @@ class InventoryScreen extends ConsumerWidget {
                 child: items.isEmpty
                     ? _buildEmptyState(context, lang, isDark)
                     : inventory.isGridView
-                        ? GridView.builder(
-                            padding: const EdgeInsets.fromLTRB(16, 4, 16, 80),
-                            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2,
-                              crossAxisSpacing: 12,
-                              mainAxisSpacing: 12,
-                              childAspectRatio: 0.78,
-                            ),
-                            itemCount: items.length,
-                            itemBuilder: (context, index) {
-                              final item = items[index];
-                              return ProduceGridCard(
-                                item: item,
-                                lang: lang,
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (_) => ProduceDetailsScreen(produceId: item.id),
-                                    ),
-                                  );
-                                },
-                                onQuickAction: () {
-                                  // Quick add to POS cart
-                                  ref.read(posNotifierProvider.notifier).selectProduce(item);
-                                  ref.read(posNotifierProvider.notifier).addToCart();
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text(
-                                        '${item.getName(lang)} ${lang == 'ar' ? 'أضيفت لسلة البيع' : 'added to cart'}',
-                                      ),
-                                      duration: const Duration(seconds: 1),
-                                      backgroundColor: AppColors.primaryDark,
-                                    ),
-                                  );
-                                },
+                    ? GridView.builder(
+                        padding: const EdgeInsets.fromLTRB(16, 4, 16, 80),
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount:
+                              (MediaQuery.sizeOf(context).width >= 1200
+                              ? 4
+                              : MediaQuery.sizeOf(context).width >= 840
+                              ? 3
+                              : 2),
+                          crossAxisSpacing: 12,
+                          mainAxisSpacing: 12,
+                          childAspectRatio: 0.78,
+                        ),
+                        itemCount: items.length,
+                        itemBuilder: (context, index) {
+                          final item = items[index];
+                          return ProduceGridCard(
+                            item: item,
+                            lang: lang,
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) =>
+                                      ProduceDetailsScreen(produceId: item.id),
+                                ),
                               );
                             },
-                          )
-                        : ListView.separated(
-                            padding: const EdgeInsets.fromLTRB(16, 4, 16, 80),
-                            itemCount: items.length,
-                            separatorBuilder: (context, index) => const SizedBox(height: 10),
-                            itemBuilder: (context, index) {
-                              final item = items[index];
-                              return ProduceListItem(
-                                item: item,
-                                lang: lang,
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (_) => ProduceDetailsScreen(produceId: item.id),
-                                    ),
-                                  );
-                                },
+                            onQuickAction: () {
+                              // Quick add to POS cart
+                              ref
+                                  .read(posNotifierProvider.notifier)
+                                  .selectProduce(item);
+                              ref
+                                  .read(posNotifierProvider.notifier)
+                                  .addToCart();
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    '${item.getName(lang)} ${lang == 'ar' ? 'أضيفت لسلة البيع' : 'added to cart'}',
+                                  ),
+                                  duration: const Duration(seconds: 1),
+                                  backgroundColor: AppColors.primaryDark,
+                                ),
                               );
                             },
-                          ),
+                          );
+                        },
+                      )
+                    : ListView.separated(
+                        padding: const EdgeInsets.fromLTRB(16, 4, 16, 80),
+                        itemCount: items.length,
+                        separatorBuilder: (context, index) =>
+                            const SizedBox(height: 10),
+                        itemBuilder: (context, index) {
+                          final item = items[index];
+                          return ProduceListItem(
+                            item: item,
+                            lang: lang,
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) =>
+                                      ProduceDetailsScreen(produceId: item.id),
+                                ),
+                              );
+                            },
+                          );
+                        },
+                      ),
               ),
             ],
           );

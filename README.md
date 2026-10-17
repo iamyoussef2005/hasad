@@ -125,3 +125,26 @@ flutter pub get
 ```bash
 flutter run
 ```
+
+
+## Workspace UI & stock attention
+
+- Adaptive workspace: bottom navigation on compact windows, navigation rail from 840 px, extended labels from 1200 px. Existing staff roles keep their own destinations.
+- Refreshed dashboard header, botanical surfaces, and responsive KPI cards.
+- Attention center with Arabic/English search, freshness/restock filters, and direct access to produce details.
+- Deterministic priority: out of stock, freshness below 50% with remaining stock (highest cost exposure first), then low stock. Items with multiple risks appear once.
+- Copy a suggested purchase list to the clipboard. Suggested quantities target twice each item's minimum threshold; they are not a sales forecast or a supplier order.
+- Attention metrics derive from the current inventory and update after sales, waste, edits, and receiving batches. Freshness is a recorded score, not an expiry-date prediction.
+
+The app still uses its existing in-memory demo repository and demo sign-in. Changes are not persisted across app restarts. The existing AI inspection demo and sample weekly charts are separate from the rule-based attention center.
+
+### Validation
+
+```sh
+flutter pub get
+flutter analyze --no-pub
+flutter test --no-pub
+flutter run -d chrome
+```
+
+Tests cover stock priority and boundary cases, bilingual search, filter interaction, purchase-list clipboard contents, and Arabic layouts on narrow/wide screens with increased text size and dark mode.

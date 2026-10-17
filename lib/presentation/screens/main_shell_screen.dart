@@ -56,10 +56,7 @@ class _MainShellScreenState extends ConsumerState<MainShellScreen> {
 
     if (userRole == UserRole.cashier) {
       // Cashier focused layout: Quick POS is primary, Inventory for stock check
-      screens = [
-        const QuickPosScreen(),
-        const InventoryScreen(),
-      ];
+      screens = [const QuickPosScreen(), const InventoryScreen()];
       destinations = [
         NavigationDestination(
           icon: Container(
@@ -68,7 +65,11 @@ class _MainShellScreenState extends ConsumerState<MainShellScreen> {
               gradient: AppColors.primaryGradient,
               shape: BoxShape.circle,
             ),
-            child: const Icon(Icons.point_of_sale_rounded, color: Colors.white, size: 20),
+            child: const Icon(
+              Icons.point_of_sale_rounded,
+              color: Colors.white,
+              size: 20,
+            ),
           ),
           label: AppStrings.get('quick_pos', lang),
         ),
@@ -83,17 +84,17 @@ class _MainShellScreenState extends ConsumerState<MainShellScreen> {
             isLabelVisible: lowStockCount > 0,
             label: Text('$lowStockCount'),
             backgroundColor: AppColors.warningOrange,
-            child: const Icon(Icons.inventory_2_rounded, color: AppColors.primaryDark),
+            child: const Icon(
+              Icons.inventory_2_rounded,
+              color: AppColors.primaryDark,
+            ),
           ),
           label: AppStrings.get('inventory', lang),
         ),
       ];
     } else if (userRole == UserRole.stockKeeper) {
       // Stock keeper layout: Inventory & Spoilage
-      screens = [
-        const InventoryScreen(),
-        const WasteManagementScreen(),
-      ];
+      screens = [const InventoryScreen(), const WasteManagementScreen()];
       destinations = [
         NavigationDestination(
           icon: Badge(
@@ -106,7 +107,10 @@ class _MainShellScreenState extends ConsumerState<MainShellScreen> {
             isLabelVisible: lowStockCount > 0,
             label: Text('$lowStockCount'),
             backgroundColor: AppColors.warningOrange,
-            child: const Icon(Icons.inventory_2_rounded, color: AppColors.primaryDark),
+            child: const Icon(
+              Icons.inventory_2_rounded,
+              color: AppColors.primaryDark,
+            ),
           ),
           label: AppStrings.get('inventory', lang),
         ),
@@ -121,7 +125,10 @@ class _MainShellScreenState extends ConsumerState<MainShellScreen> {
             isLabelVisible: wasteCount > 0,
             label: Text('$wasteCount'),
             backgroundColor: AppColors.spoilageRed,
-            child: const Icon(Icons.delete_sweep_rounded, color: AppColors.spoilageRed),
+            child: const Icon(
+              Icons.delete_sweep_rounded,
+              color: AppColors.spoilageRed,
+            ),
           ),
           label: AppStrings.get('spoilage', lang),
         ),
@@ -138,7 +145,10 @@ class _MainShellScreenState extends ConsumerState<MainShellScreen> {
       destinations = [
         NavigationDestination(
           icon: const Icon(Icons.dashboard_outlined),
-          selectedIcon: const Icon(Icons.dashboard_rounded, color: AppColors.primaryDark),
+          selectedIcon: const Icon(
+            Icons.dashboard_rounded,
+            color: AppColors.primaryDark,
+          ),
           label: AppStrings.get('dashboard', lang),
         ),
         NavigationDestination(
@@ -152,7 +162,10 @@ class _MainShellScreenState extends ConsumerState<MainShellScreen> {
             isLabelVisible: lowStockCount > 0,
             label: Text('$lowStockCount'),
             backgroundColor: AppColors.warningOrange,
-            child: const Icon(Icons.inventory_2_rounded, color: AppColors.primaryDark),
+            child: const Icon(
+              Icons.inventory_2_rounded,
+              color: AppColors.primaryDark,
+            ),
           ),
           label: AppStrings.get('inventory', lang),
         ),
@@ -163,7 +176,11 @@ class _MainShellScreenState extends ConsumerState<MainShellScreen> {
               gradient: AppColors.primaryGradient,
               shape: BoxShape.circle,
             ),
-            child: const Icon(Icons.point_of_sale_rounded, color: Colors.white, size: 20),
+            child: const Icon(
+              Icons.point_of_sale_rounded,
+              color: Colors.white,
+              size: 20,
+            ),
           ),
           label: AppStrings.get('quick_pos', lang),
         ),
@@ -178,13 +195,19 @@ class _MainShellScreenState extends ConsumerState<MainShellScreen> {
             isLabelVisible: wasteCount > 0,
             label: Text('$wasteCount'),
             backgroundColor: AppColors.spoilageRed,
-            child: const Icon(Icons.delete_sweep_rounded, color: AppColors.spoilageRed),
+            child: const Icon(
+              Icons.delete_sweep_rounded,
+              color: AppColors.spoilageRed,
+            ),
           ),
           label: AppStrings.get('spoilage', lang),
         ),
         NavigationDestination(
           icon: const Icon(Icons.bar_chart_outlined),
-          selectedIcon: const Icon(Icons.bar_chart_rounded, color: AppColors.primaryDark),
+          selectedIcon: const Icon(
+            Icons.bar_chart_rounded,
+            color: AppColors.primaryDark,
+          ),
           label: AppStrings.get('analytics', lang),
         ),
       ];
@@ -192,38 +215,74 @@ class _MainShellScreenState extends ConsumerState<MainShellScreen> {
 
     final safeIndex = _currentIndex.clamp(0, screens.length - 1);
 
-    return Scaffold(
-      appBar: const CustomAppBar(),
-      body: IndexedStack(
-        index: safeIndex,
-        children: screens,
-      ),
-      bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-          color: isDark ? AppColors.surfaceDark : Colors.white,
-          border: Border(
-            top: BorderSide(
-              color: isDark ? AppColors.borderDark : AppColors.borderLight,
-              width: 0.8,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final wide = constraints.maxWidth >= 840;
+        final extended = constraints.maxWidth >= 1200;
+        final content = SafeArea(
+          top: false,
+          child: Align(
+            alignment: Alignment.topCenter,
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 1280),
+              child: IndexedStack(index: safeIndex, children: screens),
             ),
           ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.05),
-              blurRadius: 10,
-              offset: const Offset(0, -3),
-            ),
-          ],
-        ),
-        child: NavigationBar(
-          selectedIndex: safeIndex,
-          onDestinationSelected: _navigateToTab,
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          indicatorColor: AppColors.primaryLight,
-          destinations: destinations,
-        ),
-      ),
+        );
+        return Scaffold(
+          appBar: const CustomAppBar(),
+          body: wide
+              ? Row(
+                  children: [
+                    NavigationRail(
+                      selectedIndex: safeIndex,
+                      extended: extended,
+                      minExtendedWidth: 220,
+                      backgroundColor: isDark
+                          ? AppColors.surfaceDark
+                          : Colors.white,
+                      indicatorColor: AppColors.primary.withValues(alpha: 0.14),
+                      labelType: extended
+                          ? NavigationRailLabelType.none
+                          : NavigationRailLabelType.all,
+                      onDestinationSelected: _navigateToTab,
+                      leading: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 20),
+                        child: Icon(
+                          Icons.eco_outlined,
+                          size: 32,
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
+                      ),
+                      destinations: [
+                        for (final destination in destinations)
+                          NavigationRailDestination(
+                            icon: destination.icon,
+                            selectedIcon:
+                                destination.selectedIcon ?? destination.icon,
+                            label: Text(destination.label),
+                          ),
+                      ],
+                    ),
+                    const VerticalDivider(width: 1),
+                    Expanded(child: content),
+                  ],
+                )
+              : content,
+          bottomNavigationBar: wide
+              ? null
+              : NavigationBar(
+                  selectedIndex: safeIndex,
+                  onDestinationSelected: _navigateToTab,
+                  backgroundColor: isDark
+                      ? AppColors.surfaceDark
+                      : Colors.white,
+                  elevation: 0,
+                  indicatorColor: AppColors.primary.withValues(alpha: 0.14),
+                  destinations: destinations,
+                ),
+        );
+      },
     );
   }
 }
