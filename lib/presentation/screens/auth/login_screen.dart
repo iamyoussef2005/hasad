@@ -15,8 +15,12 @@ class LoginScreen extends ConsumerStatefulWidget {
 class _LoginScreenState extends ConsumerState<LoginScreen> {
   bool _usePinMode = true; // Default to fast retail cashier PIN keypad
   String _enteredPin = '';
-  final TextEditingController _emailController = TextEditingController(text: 'manager@hasad.com');
-  final TextEditingController _passwordController = TextEditingController(text: '123456');
+  final TextEditingController _emailController = TextEditingController(
+    text: 'manager@hasad.com',
+  );
+  final TextEditingController _passwordController = TextEditingController(
+    text: '123456',
+  );
 
   @override
   void dispose() {
@@ -46,7 +50,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   }
 
   Future<void> _submitPin() async {
-    final success = await ref.read(authNotifierProvider.notifier).loginWithPin(_enteredPin);
+    final success = await ref
+        .read(authNotifierProvider.notifier)
+        .loginWithPin(_enteredPin);
     if (!success && mounted) {
       final lang = ref.read(appLocaleProvider).languageCode;
       setState(() {
@@ -87,41 +93,71 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       InkWell(
-                        onTap: () => ref.read(appLocaleProvider.notifier).toggleLocale(),
+                        onTap: () =>
+                            ref.read(appLocaleProvider.notifier).toggleLocale(),
                         borderRadius: BorderRadius.circular(10),
                         child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 5,
+                          ),
                           decoration: BoxDecoration(
-                            color: isDark ? AppColors.surfaceDark : Colors.white,
+                            color: isDark
+                                ? AppColors.surfaceDark
+                                : Colors.white,
                             borderRadius: BorderRadius.circular(10),
-                            border: Border.all(color: isDark ? AppColors.borderDark : AppColors.borderLight),
+                            border: Border.all(
+                              color: isDark
+                                  ? AppColors.borderDark
+                                  : AppColors.borderLight,
+                            ),
                           ),
                           child: Row(
                             children: [
-                              const Icon(Icons.language_rounded, size: 14, color: AppColors.primary),
+                              const Icon(
+                                Icons.language_rounded,
+                                size: 14,
+                                color: AppColors.primary,
+                              ),
                               const SizedBox(width: 4),
                               Text(
                                 lang == 'ar' ? 'English' : 'عربي',
-                                style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: AppColors.primary),
+                                style: const TextStyle(
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w700,
+                                  color: AppColors.primary,
+                                ),
                               ),
                             ],
                           ),
                         ),
                       ),
                       InkWell(
-                        onTap: () => ref.read(appThemeModeProvider.notifier).toggleTheme(),
+                        onTap: () => ref
+                            .read(appThemeModeProvider.notifier)
+                            .toggleTheme(),
                         borderRadius: BorderRadius.circular(10),
                         child: Container(
                           padding: const EdgeInsets.all(6),
                           decoration: BoxDecoration(
-                            color: isDark ? AppColors.surfaceDark : Colors.white,
+                            color: isDark
+                                ? AppColors.surfaceDark
+                                : Colors.white,
                             borderRadius: BorderRadius.circular(10),
-                            border: Border.all(color: isDark ? AppColors.borderDark : AppColors.borderLight),
+                            border: Border.all(
+                              color: isDark
+                                  ? AppColors.borderDark
+                                  : AppColors.borderLight,
+                            ),
                           ),
                           child: Icon(
-                            isDark ? Icons.light_mode_rounded : Icons.dark_mode_rounded,
+                            isDark
+                                ? Icons.light_mode_rounded
+                                : Icons.dark_mode_rounded,
                             size: 16,
-                            color: isDark ? AppColors.secondary : AppColors.textSecondaryLight,
+                            color: isDark
+                                ? AppColors.secondary
+                                : AppColors.textSecondaryLight,
                           ),
                         ),
                       ),
@@ -134,42 +170,17 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     width: 68,
                     height: 68,
                     decoration: BoxDecoration(
-                      gradient: const LinearGradient(
-                        colors: [Color(0xFF047857), Color(0xFF10B981), Color(0xFF34D399)],
-                        begin: Alignment.bottomRight,
-                        end: Alignment.topLeft,
+                      color: AppColors.primaryDark,
+                      borderRadius: BorderRadius.circular(14),
+                      border: Border.all(
+                        color: Colors.white.withValues(alpha: 0.45),
+                        width: 2,
                       ),
-                      borderRadius: BorderRadius.circular(22),
-                      border: Border.all(color: Colors.white.withValues(alpha: 0.45), width: 2),
-                      boxShadow: [
-                        BoxShadow(
-                          color: AppColors.primary.withValues(alpha: 0.4),
-                          blurRadius: 20,
-                          offset: const Offset(0, 8),
-                        ),
-                      ],
                     ),
-                    child: Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        Positioned(
-                          top: 3,
-                          left: 4,
-                          right: 4,
-                          child: Container(
-                            height: 28,
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                colors: [Colors.white.withValues(alpha: 0.4), Colors.white.withValues(alpha: 0.0)],
-                                begin: Alignment.topCenter,
-                                end: Alignment.bottomCenter,
-                              ),
-                              borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-                            ),
-                          ),
-                        ),
-                        const Icon(Icons.eco_rounded, color: Colors.white, size: 38),
-                      ],
+                    child: const Icon(
+                      Icons.eco_outlined,
+                      color: Colors.white,
+                      size: 36,
                     ),
                   ),
                   const SizedBox(height: 14),
@@ -179,16 +190,20 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     lang == 'ar' ? 'حصاد' : 'Hasad',
                     style: TextStyle(
                       fontSize: 30,
-                      fontWeight: FontWeight.w900,
+                      fontWeight: FontWeight.w600,
                       color: isDark ? Colors.white : AppColors.textPrimaryLight,
                       letterSpacing: -0.5,
                     ),
                   ),
                   Text(
-                    lang == 'ar' ? 'تسجيل الدخول لمنظومة المخزون والمبيعات' : 'Sign in to produce inventory system',
+                    lang == 'ar'
+                        ? 'تسجيل الدخول لمنظومة المخزون والمبيعات'
+                        : 'Sign in to produce inventory system',
                     style: TextStyle(
                       fontSize: 12,
-                      color: isDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight,
+                      color: isDark
+                          ? AppColors.textSecondaryDark
+                          : AppColors.textSecondaryLight,
                     ),
                   ),
                   const SizedBox(height: 24),
@@ -199,7 +214,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     decoration: BoxDecoration(
                       color: isDark ? AppColors.surfaceDark : AppColors.bgLight,
                       borderRadius: BorderRadius.circular(14),
-                      border: Border.all(color: isDark ? AppColors.borderDark : AppColors.borderLight),
+                      border: Border.all(
+                        color: isDark
+                            ? AppColors.borderDark
+                            : AppColors.borderLight,
+                      ),
                     ),
                     child: Row(
                       children: [
@@ -210,7 +229,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             child: Container(
                               padding: const EdgeInsets.symmetric(vertical: 8),
                               decoration: BoxDecoration(
-                                color: _usePinMode ? AppColors.primary : Colors.transparent,
+                                color: _usePinMode
+                                    ? AppColors.primary
+                                    : Colors.transparent,
                                 borderRadius: BorderRadius.circular(10),
                               ),
                               child: Center(
@@ -219,7 +240,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                   style: TextStyle(
                                     fontSize: 12,
                                     fontWeight: FontWeight.w700,
-                                    color: _usePinMode ? Colors.white : (isDark ? Colors.white70 : AppColors.textSecondaryLight),
+                                    color: _usePinMode
+                                        ? Colors.white
+                                        : (isDark
+                                              ? Colors.white70
+                                              : AppColors.textSecondaryLight),
                                   ),
                                 ),
                               ),
@@ -233,16 +258,24 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             child: Container(
                               padding: const EdgeInsets.symmetric(vertical: 8),
                               decoration: BoxDecoration(
-                                color: !_usePinMode ? AppColors.primary : Colors.transparent,
+                                color: !_usePinMode
+                                    ? AppColors.primary
+                                    : Colors.transparent,
                                 borderRadius: BorderRadius.circular(10),
                               ),
                               child: Center(
                                 child: Text(
-                                  lang == 'ar' ? 'البريد الإلكتروني' : 'Email Login',
+                                  lang == 'ar'
+                                      ? 'البريد الإلكتروني'
+                                      : 'Email Login',
                                   style: TextStyle(
                                     fontSize: 12,
                                     fontWeight: FontWeight.w700,
-                                    color: !_usePinMode ? Colors.white : (isDark ? Colors.white70 : AppColors.textSecondaryLight),
+                                    color: !_usePinMode
+                                        ? Colors.white
+                                        : (isDark
+                                              ? Colors.white70
+                                              : AppColors.textSecondaryLight),
                                   ),
                                 ),
                               ),
@@ -267,9 +300,15 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           height: 16,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            color: isFilled ? AppColors.primary : (isDark ? Colors.white24 : AppColors.borderLight),
+                            color: isFilled
+                                ? AppColors.primary
+                                : (isDark
+                                      ? Colors.white24
+                                      : AppColors.borderLight),
                             border: Border.all(
-                              color: isFilled ? AppColors.primary : AppColors.borderLight,
+                              color: isFilled
+                                  ? AppColors.primary
+                                  : AppColors.borderLight,
                               width: 2,
                             ),
                           ),
@@ -286,7 +325,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       controller: _emailController,
                       keyboardType: TextInputType.emailAddress,
                       decoration: InputDecoration(
-                        labelText: lang == 'ar' ? 'البريد الإلكتروني' : 'Email Address',
+                        labelText: lang == 'ar'
+                            ? 'البريد الإلكتروني'
+                            : 'Email Address',
                         prefixIcon: const Icon(Icons.email_outlined, size: 20),
                       ),
                     ),
@@ -297,7 +338,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       obscureText: true,
                       decoration: InputDecoration(
                         labelText: lang == 'ar' ? 'كلمة المرور' : 'Password',
-                        prefixIcon: const Icon(Icons.lock_outline_rounded, size: 20),
+                        prefixIcon: const Icon(
+                          Icons.lock_outline_rounded,
+                          size: 20,
+                        ),
                       ),
                     ),
                     const SizedBox(height: 18),
@@ -308,19 +352,34 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       child: ElevatedButton(
                         onPressed: authState.isLoading
                             ? null
-                            : () => ref.read(authNotifierProvider.notifier).login(
-                                  _emailController.text,
-                                  _passwordController.text,
-                                ),
+                            : () => ref
+                                  .read(authNotifierProvider.notifier)
+                                  .login(
+                                    _emailController.text,
+                                    _passwordController.text,
+                                  ),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.primary,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(14),
+                          ),
                         ),
                         child: authState.isLoading
-                            ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
+                            ? const SizedBox(
+                                width: 20,
+                                height: 20,
+                                child: CircularProgressIndicator(
+                                  color: Colors.white,
+                                  strokeWidth: 2,
+                                ),
+                              )
                             : Text(
                                 lang == 'ar' ? 'تسجيل الدخول' : 'Sign In',
-                                style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w800, color: Colors.white),
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w800,
+                                  color: Colors.white,
+                                ),
                               ),
                       ),
                     ),
@@ -354,9 +413,15 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     width: 64,
                     height: 46,
                     child: IconButton(
-                      icon: const Icon(Icons.fingerprint_rounded, size: 26, color: AppColors.primary),
+                      icon: const Icon(
+                        Icons.fingerprint_rounded,
+                        size: 26,
+                        color: AppColors.primary,
+                      ),
                       onPressed: () {
-                        ref.read(authNotifierProvider.notifier).loginAs(UserRole.manager);
+                        ref
+                            .read(authNotifierProvider.notifier)
+                            .loginAs(UserRole.manager);
                       },
                     ),
                   );
@@ -378,17 +443,28 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   child: ElevatedButton(
                     onPressed: () => _onKeypadTap(key),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: isDark ? AppColors.surfaceDark : Colors.white,
-                      foregroundColor: isDark ? Colors.white : AppColors.textPrimaryLight,
+                      backgroundColor: isDark
+                          ? AppColors.surfaceDark
+                          : Colors.white,
+                      foregroundColor: isDark
+                          ? Colors.white
+                          : AppColors.textPrimaryLight,
                       elevation: 0,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
-                        side: BorderSide(color: isDark ? AppColors.borderDark : AppColors.borderLight),
+                        side: BorderSide(
+                          color: isDark
+                              ? AppColors.borderDark
+                              : AppColors.borderLight,
+                        ),
                       ),
                     ),
                     child: Text(
                       key,
-                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
                   ),
                 );

@@ -62,7 +62,7 @@ class _MainShellScreenState extends ConsumerState<MainShellScreen> {
           icon: Container(
             padding: const EdgeInsets.all(6),
             decoration: const BoxDecoration(
-              gradient: AppColors.primaryGradient,
+              color: AppColors.primaryDark,
               shape: BoxShape.circle,
             ),
             child: const Icon(
@@ -84,10 +84,7 @@ class _MainShellScreenState extends ConsumerState<MainShellScreen> {
             isLabelVisible: lowStockCount > 0,
             label: Text('$lowStockCount'),
             backgroundColor: AppColors.warningOrange,
-            child: const Icon(
-              Icons.inventory_2_rounded,
-              color: AppColors.primaryDark,
-            ),
+            child: const Icon(Icons.inventory_2_rounded),
           ),
           label: AppStrings.get('inventory', lang),
         ),
@@ -107,10 +104,7 @@ class _MainShellScreenState extends ConsumerState<MainShellScreen> {
             isLabelVisible: lowStockCount > 0,
             label: Text('$lowStockCount'),
             backgroundColor: AppColors.warningOrange,
-            child: const Icon(
-              Icons.inventory_2_rounded,
-              color: AppColors.primaryDark,
-            ),
+            child: const Icon(Icons.inventory_2_rounded),
           ),
           label: AppStrings.get('inventory', lang),
         ),
@@ -145,10 +139,7 @@ class _MainShellScreenState extends ConsumerState<MainShellScreen> {
       destinations = [
         NavigationDestination(
           icon: const Icon(Icons.dashboard_outlined),
-          selectedIcon: const Icon(
-            Icons.dashboard_rounded,
-            color: AppColors.primaryDark,
-          ),
+          selectedIcon: const Icon(Icons.dashboard_rounded),
           label: AppStrings.get('dashboard', lang),
         ),
         NavigationDestination(
@@ -162,10 +153,7 @@ class _MainShellScreenState extends ConsumerState<MainShellScreen> {
             isLabelVisible: lowStockCount > 0,
             label: Text('$lowStockCount'),
             backgroundColor: AppColors.warningOrange,
-            child: const Icon(
-              Icons.inventory_2_rounded,
-              color: AppColors.primaryDark,
-            ),
+            child: const Icon(Icons.inventory_2_rounded),
           ),
           label: AppStrings.get('inventory', lang),
         ),
@@ -173,7 +161,7 @@ class _MainShellScreenState extends ConsumerState<MainShellScreen> {
           icon: Container(
             padding: const EdgeInsets.all(6),
             decoration: const BoxDecoration(
-              gradient: AppColors.primaryGradient,
+              color: AppColors.primaryDark,
               shape: BoxShape.circle,
             ),
             child: const Icon(
@@ -204,10 +192,7 @@ class _MainShellScreenState extends ConsumerState<MainShellScreen> {
         ),
         NavigationDestination(
           icon: const Icon(Icons.bar_chart_outlined),
-          selectedIcon: const Icon(
-            Icons.bar_chart_rounded,
-            color: AppColors.primaryDark,
-          ),
+          selectedIcon: const Icon(Icons.bar_chart_rounded),
           label: AppStrings.get('analytics', lang),
         ),
       ];

@@ -90,19 +90,15 @@ class _StockAttentionPanelState extends State<StockAttentionPanel> {
               runSpacing: 8,
               crossAxisAlignment: WrapCrossAlignment.center,
               children: [
-                Icon(
-                  Icons.track_changes_rounded,
-                  color: theme.colorScheme.primary,
-                ),
                 Text(
                   _t('مركز المتابعة', 'Attention center'),
                   style: theme.textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w800,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
-                Chip(
-                  label: Text('${all.length} ${_t('أصناف', 'items')}'),
-                  visualDensity: VisualDensity.compact,
+                Text(
+                  '${all.length} ${_t('أصناف', 'items')}',
+                  style: theme.textTheme.bodySmall,
                 ),
               ],
             ),
@@ -201,7 +197,10 @@ class _StockAttentionPanelState extends State<StockAttentionPanel> {
                   ),
                 ),
               ),
-            for (final entry in visible) _entry(context, entry),
+            for (final entry in visible) ...[
+              const Divider(height: 1),
+              _entry(context, entry),
+            ],
             if (entries.length > 3)
               TextButton(
                 onPressed: () => setState(() => _expanded = !_expanded),
@@ -235,24 +234,18 @@ class _StockAttentionPanelState extends State<StockAttentionPanel> {
     String label,
   ) {
     final theme = Theme.of(context);
-    return Container(
-      constraints: const BoxConstraints(minWidth: 130),
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.primary.withValues(alpha: 0.06),
-        borderRadius: BorderRadius.circular(14),
-      ),
+    return Padding(
+      padding: const EdgeInsetsDirectional.only(end: 24, bottom: 8),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, size: 20, color: theme.colorScheme.primary),
-          const SizedBox(height: 6),
           Text(
             value,
             style: theme.textTheme.titleLarge?.copyWith(
-              fontWeight: FontWeight.w800,
+              fontWeight: FontWeight.w600,
             ),
           ),
+          const SizedBox(height: 4),
           Text(label, style: theme.textTheme.bodySmall),
         ],
       ),
@@ -278,14 +271,18 @@ class _StockAttentionPanelState extends State<StockAttentionPanel> {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Material(
-        color: color.withValues(alpha: 0.05),
-        borderRadius: BorderRadius.circular(14),
+        color: Colors.transparent,
+        borderRadius: BorderRadius.circular(6),
         child: ListTile(
           contentPadding: const EdgeInsets.symmetric(
             horizontal: 12,
             vertical: 4,
           ),
-          leading: Text(item.emoji, style: const TextStyle(fontSize: 28)),
+          leading: Icon(
+            item.category.icon,
+            size: 22,
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
+          ),
           title: Text(
             item.getName(widget.lang),
             style: const TextStyle(fontWeight: FontWeight.w700),

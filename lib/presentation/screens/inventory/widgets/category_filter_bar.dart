@@ -31,30 +31,22 @@ class CategoryFilterBar extends StatelessWidget {
 
           return InkWell(
             onTap: () => onCategorySelected(category),
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(6),
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 200),
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
               decoration: BoxDecoration(
-                gradient: isSelected ? AppColors.primaryGradient : null,
                 color: isSelected
-                    ? null
+                    ? Theme.of(
+                        context,
+                      ).colorScheme.primary.withValues(alpha: 0.08)
                     : (isDark ? AppColors.surfaceDark : Colors.white),
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(6),
                 border: Border.all(
                   color: isSelected
                       ? Colors.transparent
                       : (isDark ? AppColors.borderDark : AppColors.borderLight),
                 ),
-                boxShadow: isSelected
-                    ? [
-                        BoxShadow(
-                          color: AppColors.primary.withValues(alpha: 0.3),
-                          blurRadius: 8,
-                          offset: const Offset(0, 3),
-                        )
-                      ]
-                    : null,
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
@@ -63,18 +55,24 @@ class CategoryFilterBar extends StatelessWidget {
                     category.icon,
                     size: 16,
                     color: isSelected
-                        ? Colors.white
-                        : (isDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight),
+                        ? Theme.of(context).colorScheme.primary
+                        : (isDark
+                              ? AppColors.textSecondaryDark
+                              : AppColors.textSecondaryLight),
                   ),
                   const SizedBox(width: 6),
                   Text(
                     category.getLocalizedName(lang),
                     style: TextStyle(
                       fontSize: 13,
-                      fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                      fontWeight: isSelected
+                          ? FontWeight.w700
+                          : FontWeight.w500,
                       color: isSelected
-                          ? Colors.white
-                          : (isDark ? AppColors.textPrimaryDark : AppColors.textPrimaryLight),
+                          ? Theme.of(context).colorScheme.primary
+                          : (isDark
+                                ? AppColors.textPrimaryDark
+                                : AppColors.textPrimaryLight),
                     ),
                   ),
                 ],

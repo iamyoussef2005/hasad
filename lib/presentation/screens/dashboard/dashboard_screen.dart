@@ -64,68 +64,34 @@ class DashboardScreen extends ConsumerWidget {
                   attentionCount: attention.length,
                 ),
 
-                // Quick Action Bar
-                Row(
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
                   children: [
-                    Expanded(
-                      child: _buildActionButton(
-                        context: context,
-                        icon: Icons.add_circle_outline_rounded,
-                        label: AppStrings.get('add_produce', lang),
-                        color: AppColors.primary,
-                        onTap: () {
-                          showDialog(
-                            context: context,
-                            builder: (_) => const AddEditProduceDialog(),
-                          );
-                        },
-                      ),
+                    FilledButton.icon(
+                      onPressed: () => onNavigateToTab?.call(2),
+                      icon: const Icon(Icons.point_of_sale_outlined, size: 18),
+                      label: Text(AppStrings.get('quick_pos', lang)),
                     ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: _buildActionButton(
+                    OutlinedButton.icon(
+                      onPressed: () => showDialog(
                         context: context,
-                        icon: Icons.delete_sweep_outlined,
-                        label: AppStrings.get('record_waste', lang),
-                        color: AppColors.spoilageRed,
-                        onTap: () {
-                          showDialog(
-                            context: context,
-                            builder: (_) => const RecordWasteDialog(),
-                          );
-                        },
+                        builder: (_) => const AddEditProduceDialog(),
                       ),
+                      icon: const Icon(Icons.add, size: 18),
+                      label: Text(AppStrings.get('add_produce', lang)),
                     ),
-                    const SizedBox(width: 10),
-                    InkWell(
-                      onTap: () => onNavigateToTab?.call(2), // POS tab
-                      borderRadius: BorderRadius.circular(16),
-                      child: Container(
-                        padding: const EdgeInsets.all(13),
-                        decoration: BoxDecoration(
-                          gradient: AppColors.citrusGradient,
-                          borderRadius: BorderRadius.circular(16),
-                          boxShadow: [
-                            BoxShadow(
-                              color: AppColors.secondary.withValues(
-                                alpha: 0.25,
-                              ),
-                              blurRadius: 10,
-                              offset: const Offset(0, 3),
-                            ),
-                          ],
-                        ),
-                        child: const Icon(
-                          Icons.point_of_sale_rounded,
-                          color: Colors.white,
-                          size: 22,
-                        ),
+                    TextButton.icon(
+                      onPressed: () => showDialog(
+                        context: context,
+                        builder: (_) => const RecordWasteDialog(),
                       ),
+                      icon: const Icon(Icons.remove_circle_outline, size: 18),
+                      label: Text(AppStrings.get('record_waste', lang)),
                     ),
                   ],
                 ),
-                const SizedBox(height: 16),
-
+                const SizedBox(height: 24),
                 LayoutBuilder(
                   builder: (context, constraints) => GridView(
                     shrinkWrap: true,
@@ -133,11 +99,11 @@ class DashboardScreen extends ConsumerWidget {
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: constraints.maxWidth >= 900
                           ? 4
-                          : (constraints.maxWidth < 340 ? 1 : 2),
+                          : (constraints.maxWidth < 280 ? 1 : 2),
                       crossAxisSpacing: 12,
                       mainAxisSpacing: 12,
                       mainAxisExtent:
-                          170 *
+                          148 *
                           MediaQuery.textScalerOf(
                             context,
                           ).scale(1).clamp(1.0, 2.0),
@@ -226,9 +192,7 @@ class DashboardScreen extends ConsumerWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      lang == 'ar'
-                          ? 'الأصناف الأكثر رواجاً بالمحل'
-                          : 'Fast Moving Produce',
+                      lang == 'ar' ? 'من المخزون' : 'From your inventory',
                       style: AppTypography.headlineSmall(
                         isDark: isDark,
                       ).copyWith(fontSize: 15),
@@ -280,15 +244,6 @@ class DashboardScreen extends ConsumerWidget {
                                   ? AppColors.borderDark
                                   : AppColors.borderLight,
                             ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withValues(
-                                  alpha: isDark ? 0.2 : 0.04,
-                                ),
-                                blurRadius: 10,
-                                offset: const Offset(0, 3),
-                              ),
-                            ],
                           ),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -393,65 +348,6 @@ class DashboardScreen extends ConsumerWidget {
           ),
         );
       },
-    );
-  }
-
-  Widget _buildActionButton({
-    required BuildContext context,
-    required IconData icon,
-    required String label,
-    required Color color,
-    required VoidCallback onTap,
-  }) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(16),
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
-        decoration: BoxDecoration(
-          color: isDark ? AppColors.surfaceDark : Colors.white,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(
-            color: color.withValues(alpha: isDark ? 0.35 : 0.25),
-            width: 1.2,
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: color.withValues(alpha: 0.08),
-              blurRadius: 10,
-              offset: const Offset(0, 3),
-            ),
-          ],
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              padding: const EdgeInsets.all(5),
-              decoration: BoxDecoration(
-                color: color.withValues(alpha: 0.12),
-                shape: BoxShape.circle,
-              ),
-              child: Icon(icon, color: color, size: 16),
-            ),
-            const SizedBox(width: 8),
-            Flexible(
-              child: Text(
-                label,
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w700,
-                  color: isDark ? Colors.white : AppColors.textPrimaryLight,
-                ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }

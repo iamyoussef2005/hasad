@@ -72,10 +72,9 @@ class ProduceGridCard extends StatelessWidget {
           // Produce Name
           Text(
             item.getName(lang),
-            style: AppTypography.headlineSmall(isDark: isDark).copyWith(
-              fontSize: 14,
-              fontWeight: FontWeight.w700,
-            ),
+            style: AppTypography.headlineSmall(
+              isDark: isDark,
+            ).copyWith(fontSize: 14, fontWeight: FontWeight.w700),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
@@ -85,7 +84,9 @@ class ProduceGridCard extends StatelessWidget {
             item.category.getLocalizedName(lang),
             style: AppTypography.bodySmall(isDark: isDark).copyWith(
               fontSize: 11,
-              color: isDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight,
+              color: isDark
+                  ? AppColors.textSecondaryDark
+                  : AppColors.textSecondaryLight,
             ),
           ),
           const Spacer(),
@@ -110,9 +111,13 @@ class ProduceGridCard extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Icon(
-                      item.isLowStock ? Icons.warning_amber_rounded : Icons.check_circle_outline_rounded,
+                      item.isLowStock
+                          ? Icons.warning_amber_rounded
+                          : Icons.check_circle_outline_rounded,
                       size: 11,
-                      color: item.isLowStock ? AppColors.spoilageRed : AppColors.primary,
+                      color: item.isLowStock
+                          ? Theme.of(context).colorScheme.error
+                          : Theme.of(context).colorScheme.primary,
                     ),
                     const SizedBox(width: 4),
                     Text(
@@ -120,7 +125,11 @@ class ProduceGridCard extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 10,
                         fontWeight: FontWeight.w600,
-                        color: item.isLowStock ? AppColors.spoilageRed : (isDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight),
+                        color: item.isLowStock
+                            ? AppColors.spoilageRed
+                            : (isDark
+                                  ? AppColors.textSecondaryDark
+                                  : AppColors.textSecondaryLight),
                       ),
                     ),
                   ],
@@ -130,7 +139,11 @@ class ProduceGridCard extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 11,
                     fontWeight: FontWeight.w800,
-                    color: item.isLowStock ? AppColors.spoilageRed : (isDark ? AppColors.textPrimaryDark : AppColors.textPrimaryLight),
+                    color: item.isLowStock
+                        ? AppColors.spoilageRed
+                        : (isDark
+                              ? AppColors.textPrimaryDark
+                              : AppColors.textPrimaryLight),
                   ),
                 ),
               ],
@@ -152,13 +165,18 @@ class ProduceGridCard extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 9,
                           fontWeight: FontWeight.w500,
-                          color: isDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight,
+                          color: isDark
+                              ? AppColors.textSecondaryDark
+                              : AppColors.textSecondaryLight,
                         ),
                       ),
                       if (item.hasRescueDiscount) ...[
                         const SizedBox(width: 4),
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 4,
+                            vertical: 1,
+                          ),
                           decoration: BoxDecoration(
                             color: AppColors.spoilageRed,
                             borderRadius: BorderRadius.circular(4),
@@ -181,11 +199,14 @@ class ProduceGridCard extends StatelessWidget {
                     children: [
                       Text(
                         item.sellingPrice.toStringAsFixed(2),
-                        style: AppTypography.numberMedium(isDark: isDark).copyWith(
-                          color: item.hasRescueDiscount ? AppColors.spoilageRed : AppColors.primary,
-                          fontSize: 16.5,
-                          fontWeight: FontWeight.w900,
-                        ),
+                        style: AppTypography.numberMedium(isDark: isDark)
+                            .copyWith(
+                              color: item.hasRescueDiscount
+                                  ? Theme.of(context).colorScheme.error
+                                  : Theme.of(context).colorScheme.primary,
+                              fontSize: 16.5,
+                              fontWeight: FontWeight.w900,
+                            ),
                       ),
                       const SizedBox(width: 3),
                       Text(
@@ -193,17 +214,22 @@ class ProduceGridCard extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 10,
                           fontWeight: FontWeight.w700,
-                          color: item.hasRescueDiscount ? AppColors.spoilageRed : AppColors.primary,
+                          color: item.hasRescueDiscount
+                              ? Theme.of(context).colorScheme.error
+                              : Theme.of(context).colorScheme.primary,
                         ),
                       ),
-                      if (item.hasRescueDiscount && item.originalPrice != null) ...[
+                      if (item.hasRescueDiscount &&
+                          item.originalPrice != null) ...[
                         const SizedBox(width: 5),
                         Text(
                           item.originalPrice!.toStringAsFixed(2),
                           style: TextStyle(
                             fontSize: 10,
                             decoration: TextDecoration.lineThrough,
-                            color: isDark ? AppColors.textSecondaryDark : Colors.grey,
+                            color: isDark
+                                ? AppColors.textSecondaryDark
+                                : Colors.grey,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
@@ -226,10 +252,10 @@ class ProduceGridCard extends StatelessWidget {
                       color: AppColors.primary.withValues(alpha: 0.12),
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    child: const Icon(
+                    child: Icon(
                       Icons.add_shopping_cart_rounded,
                       size: 16,
-                      color: AppColors.primary,
+                      color: Theme.of(context).colorScheme.primary,
                     ),
                   ),
                 ),

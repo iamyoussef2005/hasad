@@ -2,284 +2,109 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/localization/app_locale_provider.dart';
-import '../../core/utils/app_haptics.dart';
 import '../../data/models/app_user.dart';
 import '../controllers/auth_controller.dart';
-import 'pulsing_badge.dart';
 
 class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
   final String? title;
   final String? subtitle;
   final List<Widget>? extraActions;
 
-  const CustomAppBar({
-    super.key,
-    this.title,
-    this.subtitle,
-    this.extraActions,
-  });
+  const CustomAppBar({super.key, this.title, this.subtitle, this.extraActions});
 
   @override
   Size get preferredSize => const Size.fromHeight(66);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final locale = ref.watch(appLocaleProvider);
-    final themeMode = ref.watch(appThemeModeProvider);
+    final lang = ref.watch(appLocaleProvider).languageCode;
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final lang = locale.languageCode;
-
-    final displayTitle = title ?? AppStrings.get('app_name', lang);
-
+    final user = ref.watch(authNotifierProvider).currentUser;
     return Container(
-      padding: const EdgeInsets.only(top: 10, left: 16, right: 16, bottom: 8),
       decoration: BoxDecoration(
-        color: isDark
-            ? AppColors.bgDark.withValues(alpha: 0.95)
-            : AppColors.bgLight.withValues(alpha: 0.95),
+        color: isDark ? AppColors.surfaceDark : AppColors.surfaceLight,
         border: Border(
           bottom: BorderSide(
             color: isDark ? AppColors.borderDark : AppColors.borderLight,
-            width: 0.8,
           ),
         ),
       ),
+      padding: const EdgeInsets.symmetric(horizontal: 16),
       child: SafeArea(
         bottom: false,
         child: Row(
           children: [
-            // Modern High-End Brand Icon
-            Container(
-              width: 44,
-              height: 44,
-              decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  colors: [
-                    Color(0xFF047857),
-                    Color(0xFF10B981),
-                    Color(0xFF34D399),
-                  ],
-                  begin: Alignment.bottomRight,
-                  end: Alignment.topLeft,
-                ),
-                borderRadius: BorderRadius.circular(15),
-                border: Border.all(
-                  color: Colors.white.withValues(alpha: 0.45),
-                  width: 1.5,
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: const Color(0xFF10B981).withValues(alpha: 0.38),
-                    blurRadius: 14,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
-              ),
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  // Subtle gloss highlight on top
-                  Positioned(
-                    top: 2,
-                    left: 3,
-                    right: 3,
-                    child: Container(
-                      height: 18,
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [
-                            Colors.white.withValues(alpha: 0.4),
-                            Colors.white.withValues(alpha: 0.0),
-                          ],
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                        ),
-                        borderRadius: const BorderRadius.vertical(top: Radius.circular(13)),
-                      ),
-                    ),
-                  ),
-                  // Premium vector leaf icon
-                  const Icon(
-                    Icons.eco_rounded,
-                    color: Colors.white,
-                    size: 26,
-                  ),
-                ],
-              ),
+            Icon(
+              Icons.eco_outlined,
+              size: 28,
+              color: Theme.of(context).colorScheme.primary,
             ),
-            const SizedBox(width: 12),
-            // Title Only (Larger and Bolder)
-            // Title & Subtitle / Live Cloud Indicator
+            const SizedBox(width: 10),
             Expanded(
               child: Column(
-                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    displayTitle,
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w900,
-                      letterSpacing: -0.3,
-                      color: isDark ? AppColors.textPrimaryDark : AppColors.textPrimaryLight,
-                    ),
+                    title ?? AppStrings.get('app_name', lang),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      fontSize: 19,
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
-                  const SizedBox(height: 2),
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const PulsingBadge(
-                        color: AppColors.successGreen,
-                        size: 6,
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        subtitle ?? (lang == 'ar' ? 'الفرع الرئيسي' : 'Main Branch'),
-                        style: TextStyle(
-                          fontSize: 10,
-                          fontWeight: FontWeight.w600,
-                          color: isDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ],
+                  Text(
+                    subtitle ??
+                        (lang == 'ar' ? 'الفرع الرئيسي' : 'Main branch'),
+                    style: Theme.of(context).textTheme.bodySmall,
                   ),
                 ],
               ),
             ),
-            // Extra actions if any
             if (extraActions != null) ...extraActions!,
-
-            // Language Switcher Button
-            InkWell(
-              onTap: () {
-                AppHaptics.light();
-                ref.read(appLocaleProvider.notifier).toggleLocale();
-              },
-              borderRadius: BorderRadius.circular(12),
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                decoration: BoxDecoration(
-                  color: isDark ? AppColors.surfaceDark : Colors.white,
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(
-                    color: isDark ? AppColors.borderDark : AppColors.borderLight,
-                  ),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Icon(Icons.language_rounded, size: 16, color: AppColors.primary),
-                    const SizedBox(width: 4),
-                    Text(
-                      lang == 'ar' ? 'EN' : 'عربي',
-                      style: const TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w700,
-                        color: AppColors.primary,
-                      ),
-                    ),
-                  ],
-                ),
+            TextButton(
+              onPressed: () =>
+                  ref.read(appLocaleProvider.notifier).toggleLocale(),
+              child: Text(lang == 'ar' ? 'EN' : 'عربي'),
+            ),
+            IconButton(
+              tooltip: lang == 'ar' ? 'تغيير المظهر' : 'Change theme',
+              onPressed: () =>
+                  ref.read(appThemeModeProvider.notifier).toggleTheme(),
+              icon: Icon(
+                isDark ? Icons.light_mode_outlined : Icons.dark_mode_outlined,
+                size: 20,
               ),
             ),
-            const SizedBox(width: 8),
-
-            // Dark Mode Switcher
-            InkWell(
-              onTap: () {
-                AppHaptics.light();
-                ref.read(appThemeModeProvider.notifier).toggleTheme();
-              },
-              borderRadius: BorderRadius.circular(12),
-              child: Container(
-                width: 36,
-                height: 36,
-                decoration: BoxDecoration(
-                  color: isDark ? AppColors.surfaceDark : Colors.white,
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(
-                    color: isDark ? AppColors.borderDark : AppColors.borderLight,
-                  ),
-                ),
-                child: Icon(
-                  themeMode == ThemeMode.dark ? Icons.light_mode_rounded : Icons.dark_mode_rounded,
-                  size: 18,
-                  color: isDark ? AppColors.secondary : AppColors.textSecondaryLight,
-                ),
+            if (user != null)
+              IconButton(
+                tooltip: user.role.getLocalized(lang),
+                onPressed: () =>
+                    _showUserMenu(context, ref, user, lang, isDark),
+                icon: const Icon(Icons.account_circle_outlined, size: 24),
               ),
-            ),
-            const SizedBox(width: 8),
-
-            // User Profile Avatar & Logout Dialog
-            Consumer(
-              builder: (context, ref, _) {
-                final authState = ref.watch(authNotifierProvider);
-                final user = authState.currentUser;
-                if (user == null) return const SizedBox.shrink();
-
-                return InkWell(
-                  onTap: () => _showUserMenu(context, ref, user, lang, isDark),
-                  borderRadius: BorderRadius.circular(12),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
-                    decoration: BoxDecoration(
-                      color: authState.isManager
-                          ? AppColors.primaryLight
-                          : AppColors.secondaryLight,
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(
-                        color: authState.isManager
-                            ? AppColors.primary
-                            : AppColors.secondary,
-                        width: 1.2,
-                      ),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          authState.isManager
-                              ? Icons.admin_panel_settings_rounded
-                              : Icons.point_of_sale_rounded,
-                          size: 14,
-                          color: authState.isManager
-                              ? AppColors.primaryDark
-                              : AppColors.secondaryDark,
-                        ),
-                        const SizedBox(width: 5),
-                        Text(
-                          user.role.getLocalized(lang),
-                          style: TextStyle(
-                            fontSize: 11,
-                            fontWeight: FontWeight.w800,
-                            color: authState.isManager
-                                ? AppColors.primaryDark
-                                : AppColors.secondaryDark,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              },
-            ),
           ],
         ),
       ),
     );
   }
 
-  void _showUserMenu(BuildContext context, WidgetRef ref, dynamic user, String lang, bool isDark) {
+  void _showUserMenu(
+    BuildContext context,
+    WidgetRef ref,
+    dynamic user,
+    String lang,
+    bool isDark,
+  ) {
     final isManager = user.role == UserRole.manager;
     showDialog(
       context: context,
       builder: (ctx) {
         return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
           backgroundColor: isDark ? AppColors.surfaceDark : Colors.white,
           title: Row(
             children: [
@@ -287,7 +112,9 @@ class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
                 width: 42,
                 height: 42,
                 decoration: BoxDecoration(
-                  color: isManager ? AppColors.primaryLight : AppColors.secondaryLight,
+                  color: isManager
+                      ? AppColors.primaryLight
+                      : AppColors.secondaryLight,
                   shape: BoxShape.circle,
                   border: Border.all(
                     color: isManager ? AppColors.primary : AppColors.secondary,
@@ -295,8 +122,12 @@ class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
                   ),
                 ),
                 child: Icon(
-                  isManager ? Icons.admin_panel_settings_rounded : Icons.point_of_sale_rounded,
-                  color: isManager ? AppColors.primaryDark : AppColors.secondaryDark,
+                  isManager
+                      ? Icons.admin_panel_settings_rounded
+                      : Icons.point_of_sale_rounded,
+                  color: isManager
+                      ? AppColors.primaryDark
+                      : AppColors.secondaryDark,
                   size: 22,
                 ),
               ),
@@ -310,7 +141,9 @@ class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w800,
-                        color: isDark ? Colors.white : AppColors.textPrimaryLight,
+                        color: isDark
+                            ? Colors.white
+                            : AppColors.textPrimaryLight,
                       ),
                     ),
                     Text(
@@ -346,7 +179,10 @@ class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
                     const SizedBox(height: 2),
                     Text(
                       '${lang == 'ar' ? 'الرقم الوظيفي:' : 'Employee No:'} #${user.pinCode}',
-                      style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700),
+                      style: const TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
                   ],
                 ),
@@ -355,7 +191,10 @@ class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
               // Fast Role Switcher
               Text(
                 lang == 'ar' ? 'تبديل المستخدم الحالي:' : 'Switch Active User:',
-                style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700),
+                style: const TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w700,
+                ),
               ),
               const SizedBox(height: 8),
               Row(
@@ -363,17 +202,25 @@ class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
                   Expanded(
                     child: OutlinedButton(
                       onPressed: () {
-                        ref.read(authNotifierProvider.notifier).loginAs(UserRole.manager);
+                        ref
+                            .read(authNotifierProvider.notifier)
+                            .loginAs(UserRole.manager);
                         Navigator.pop(ctx);
                       },
                       style: OutlinedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 6),
                         side: const BorderSide(color: AppColors.primary),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
                       ),
                       child: Text(
                         lang == 'ar' ? 'مدير' : 'Manager',
-                        style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: AppColors.primary),
+                        style: const TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.primary,
+                        ),
                       ),
                     ),
                   ),
@@ -381,17 +228,25 @@ class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
                   Expanded(
                     child: OutlinedButton(
                       onPressed: () {
-                        ref.read(authNotifierProvider.notifier).loginAs(UserRole.cashier);
+                        ref
+                            .read(authNotifierProvider.notifier)
+                            .loginAs(UserRole.cashier);
                         Navigator.pop(ctx);
                       },
                       style: OutlinedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 6),
                         side: const BorderSide(color: AppColors.secondary),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
                       ),
                       child: Text(
                         lang == 'ar' ? 'كاشير' : 'Cashier',
-                        style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: AppColors.secondaryDark),
+                        style: const TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.secondaryDark,
+                        ),
                       ),
                     ),
                   ),
@@ -407,12 +262,22 @@ class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.spoilageRed,
                   padding: const EdgeInsets.symmetric(vertical: 10),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
                 ),
-                icon: const Icon(Icons.logout_rounded, size: 16, color: Colors.white),
+                icon: const Icon(
+                  Icons.logout_rounded,
+                  size: 16,
+                  color: Colors.white,
+                ),
                 label: Text(
                   lang == 'ar' ? 'تسجيل الخروج' : 'Sign Out',
-                  style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w800, color: Colors.white),
+                  style: const TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w800,
+                    color: Colors.white,
+                  ),
                 ),
               ),
             ],

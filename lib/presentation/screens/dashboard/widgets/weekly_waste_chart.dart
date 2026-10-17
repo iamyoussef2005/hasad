@@ -7,16 +7,21 @@ import '../../../widgets/frosted_glass_container.dart';
 class WeeklyWasteChart extends StatelessWidget {
   final String lang;
 
-  const WeeklyWasteChart({
-    super.key,
-    required this.lang,
-  });
+  const WeeklyWasteChart({super.key, required this.lang});
 
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    final daysAr = ['السبت', 'الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة'];
+    final daysAr = [
+      'السبت',
+      'الأحد',
+      'الإثنين',
+      'الثلاثاء',
+      'الأربعاء',
+      'الخميس',
+      'الجمعة',
+    ];
     final daysEn = ['Sat', 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
     final days = lang == 'ar' ? daysAr : daysEn;
 
@@ -37,14 +42,17 @@ class WeeklyWasteChart extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    lang == 'ar' ? 'المبيعات مقارنة بالهدر هذا الأسبوع' : 'Weekly Sales vs Spoilage',
-                    style: AppTypography.headlineSmall(isDark: isDark).copyWith(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w700,
-                    ),
+                    lang == 'ar'
+                        ? 'المبيعات مقارنة بالهدر هذا الأسبوع'
+                        : 'Weekly Sales vs Spoilage',
+                    style: AppTypography.headlineSmall(
+                      isDark: isDark,
+                    ).copyWith(fontSize: 15, fontWeight: FontWeight.w700),
                   ),
                   Text(
-                    lang == 'ar' ? 'مقارنة يومية بالريال السعودي (مئات)' : 'Daily comparison in SAR (x100)',
+                    lang == 'ar'
+                        ? 'مقارنة يومية بالريال السعودي (مئات)'
+                        : 'Daily comparison in SAR (x100)',
                     style: AppTypography.bodySmall(isDark: isDark),
                   ),
                 ],
@@ -77,7 +85,8 @@ class WeeklyWasteChart extends StatelessWidget {
                 barTouchData: BarTouchData(
                   enabled: true,
                   touchTooltipData: BarTouchTooltipData(
-                    getTooltipColor: (_) => isDark ? AppColors.surfaceDark : Colors.white,
+                    getTooltipColor: (_) =>
+                        isDark ? AppColors.surfaceDark : Colors.white,
                   ),
                 ),
                 titlesData: FlTitlesData(
@@ -87,7 +96,9 @@ class WeeklyWasteChart extends StatelessWidget {
                       showTitles: true,
                       getTitlesWidget: (value, meta) {
                         final index = value.toInt();
-                        if (index < 0 || index >= days.length) return const SizedBox.shrink();
+                        if (index < 0 || index >= days.length) {
+                          return const SizedBox.shrink();
+                        }
                         return Padding(
                           padding: const EdgeInsets.only(top: 6),
                           child: Text(
@@ -95,23 +106,33 @@ class WeeklyWasteChart extends StatelessWidget {
                             style: TextStyle(
                               fontSize: 10,
                               fontWeight: FontWeight.w600,
-                              color: isDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight,
+                              color: isDark
+                                  ? AppColors.textSecondaryDark
+                                  : AppColors.textSecondaryLight,
                             ),
                           ),
                         );
                       },
                     ),
                   ),
-                  leftTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                  topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                  rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                  leftTitles: const AxisTitles(
+                    sideTitles: SideTitles(showTitles: false),
+                  ),
+                  topTitles: const AxisTitles(
+                    sideTitles: SideTitles(showTitles: false),
+                  ),
+                  rightTitles: const AxisTitles(
+                    sideTitles: SideTitles(showTitles: false),
+                  ),
                 ),
                 gridData: FlGridData(
                   show: true,
                   drawVerticalLine: false,
                   horizontalInterval: 10,
                   getDrawingHorizontalLine: (value) => FlLine(
-                    color: isDark ? Colors.white.withValues(alpha: 0.05) : AppColors.borderLight,
+                    color: isDark
+                        ? Colors.white.withValues(alpha: 0.05)
+                        : AppColors.borderLight,
                     strokeWidth: 1,
                   ),
                 ),
@@ -123,23 +144,19 @@ class WeeklyWasteChart extends StatelessWidget {
                     barRods: [
                       BarChartRodData(
                         toY: salesData[i],
-                        gradient: const LinearGradient(
-                          colors: [Color(0xFF34D399), Color(0xFF059669)],
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                        ),
+                        color: AppColors.primary,
                         width: 11,
-                        borderRadius: const BorderRadius.vertical(top: Radius.circular(6)),
+                        borderRadius: const BorderRadius.vertical(
+                          top: Radius.circular(2),
+                        ),
                       ),
                       BarChartRodData(
                         toY: wasteData[i],
-                        gradient: const LinearGradient(
-                          colors: [Color(0xFFF87171), Color(0xFFDC2626)],
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                        ),
+                        color: AppColors.spoilageRed,
                         width: 9,
-                        borderRadius: const BorderRadius.vertical(top: Radius.circular(6)),
+                        borderRadius: const BorderRadius.vertical(
+                          top: Radius.circular(2),
+                        ),
                       ),
                     ],
                   );
@@ -152,7 +169,11 @@ class WeeklyWasteChart extends StatelessWidget {
     );
   }
 
-  Widget _buildLegendItem({required Color color, required String label, required bool isDark}) {
+  Widget _buildLegendItem({
+    required Color color,
+    required String label,
+    required bool isDark,
+  }) {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -170,7 +191,9 @@ class WeeklyWasteChart extends StatelessWidget {
           style: TextStyle(
             fontSize: 11,
             fontWeight: FontWeight.w600,
-            color: isDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight,
+            color: isDark
+                ? AppColors.textSecondaryDark
+                : AppColors.textSecondaryLight,
           ),
         ),
       ],

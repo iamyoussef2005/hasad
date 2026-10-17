@@ -159,16 +159,15 @@ class InventoryScreen extends ConsumerWidget {
                     : inventory.isGridView
                     ? GridView.builder(
                         padding: const EdgeInsets.fromLTRB(16, 4, 16, 80),
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount:
-                              (MediaQuery.sizeOf(context).width >= 1200
-                              ? 4
-                              : MediaQuery.sizeOf(context).width >= 840
-                              ? 3
-                              : 2),
+                        gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                          maxCrossAxisExtent: 280,
+                          mainAxisExtent:
+                              250 *
+                              MediaQuery.textScalerOf(
+                                context,
+                              ).scale(1).clamp(1.0, 2.0),
                           crossAxisSpacing: 12,
                           mainAxisSpacing: 12,
-                          childAspectRatio: 0.78,
                         ),
                         itemCount: items.length,
                         itemBuilder: (context, index) {

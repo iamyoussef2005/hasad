@@ -15,87 +15,57 @@ class StoreOverviewHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ar = lang == 'ar';
-    return Container(
-      margin: const EdgeInsets.only(bottom: 20),
-      padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [Color(0xFF123D32), Color(0xFF22634C)],
-          begin: AlignmentDirectional.topStart,
-          end: AlignmentDirectional.bottomEnd,
-        ),
-        borderRadius: BorderRadius.circular(28),
-      ),
+    final theme = Theme.of(context);
+    return Padding(
+      padding: const EdgeInsets.only(top: 12, bottom: 24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Wrap(
-            spacing: 12,
-            runSpacing: 8,
-            crossAxisAlignment: WrapCrossAlignment.center,
-            children: [
-              const Icon(Icons.eco_outlined, color: Color(0xFFD2EDAD)),
-              Text(
-                ar ? 'حصاد • مساحة العمل' : 'HASAD / WORKSPACE',
-                style: const TextStyle(
-                  color: Color(0xFFD2EDAD),
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              Text(
-                DateFormat.yMMMd(lang).format(DateTime.now()),
-                style: const TextStyle(color: Colors.white70, fontSize: 12),
-              ),
-            ],
-          ),
-          const SizedBox(height: 18),
           Text(
-            ar ? 'أهلاً، $name' : 'Welcome, $name',
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 24,
-              fontWeight: FontWeight.w800,
+            DateFormat(
+              ar ? 'EEEE، d MMMM' : 'EEEE, d MMMM',
+              lang,
+            ).format(DateTime.now()),
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
             ),
           ),
           const SizedBox(height: 8),
           Text(
-            ar
-                ? 'مخزون أنضر. هدر أقل. قرارات أوضح.'
-                : 'Fresher stock. Less waste. Clearer decisions.',
-            style: const TextStyle(color: Colors.white70, height: 1.6),
+            ar ? 'نظرة على المتجر' : 'Store overview',
+            style: theme.textTheme.headlineSmall?.copyWith(
+              fontWeight: FontWeight.w600,
+            ),
           ),
-          const SizedBox(height: 20),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-            decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.09),
-              borderRadius: BorderRadius.circular(14),
-              border: Border.all(color: Colors.white.withValues(alpha: 0.15)),
-            ),
-            child: Row(
-              children: [
-                Icon(
-                  attentionCount == 0
-                      ? Icons.check_circle_outline
-                      : Icons.flag_outlined,
-                  size: 18,
-                  color: const Color(0xFFD2EDAD),
+          const SizedBox(height: 6),
+          Text(
+            ar ? 'أهلاً $name' : 'Hello, $name',
+            style: theme.textTheme.bodyMedium,
+          ),
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              Icon(
+                attentionCount == 0
+                    ? Icons.check_circle_outline
+                    : Icons.flag_outlined,
+                size: 16,
+                color: theme.colorScheme.primary,
+              ),
+              const SizedBox(width: 6),
+              Expanded(
+                child: Text(
+                  ar
+                      ? (attentionCount == 0
+                            ? 'لا توجد أصناف تحتاج متابعة اليوم'
+                            : '$attentionCount أصناف تحتاج متابعة اليوم')
+                      : (attentionCount == 0
+                            ? 'No items need attention today'
+                            : '$attentionCount items need attention today'),
+                  style: theme.textTheme.bodySmall,
                 ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Text(
-                    ar
-                        ? (attentionCount == 0
-                              ? 'كل الأصناف بحالة مستقرة'
-                              : '$attentionCount أصناف تحتاج متابعتك اليوم')
-                        : (attentionCount == 0
-                              ? 'Your inventory is in good shape'
-                              : '$attentionCount items need your attention'),
-                    style: const TextStyle(color: Colors.white, fontSize: 12),
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
         ],
       ),
